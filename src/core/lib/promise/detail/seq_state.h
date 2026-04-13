@@ -101,13 +101,13 @@ struct SeqState<Traits, P, F0> {
   GPR_NO_UNIQUE_ADDRESS State state = State::kState0;
   GPR_NO_UNIQUE_ADDRESS DebugLocation whence;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(P&& p, F0&& f0,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(P&& p, F0&& f0,
                                                 DebugLocation whence) noexcept
       : whence(whence) {
     Construct(&prior.current_promise, std::forward<P>(p));
     Construct(&prior.next_factory, std::forward<F0>(f0));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~SeqState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~SeqState() {
     switch (state) {
       case State::kState0:
         Destruct(&prior.current_promise);
@@ -119,16 +119,16 @@ struct SeqState<Traits, P, F0> {
   tail0:
     Destruct(&prior.next_factory);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(
       const SeqState& other) noexcept = delete;
   SeqState& operator=(const SeqState& other) = delete;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(SeqState&& other) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(SeqState&& other) noexcept
       : state(other.state), whence(other.whence) {
     GRPC_DCHECK(state == State::kState0);
     Construct(&prior.current_promise, std::move(other.prior.current_promise));
     Construct(&prior.next_factory, std::move(other.prior.next_factory));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState& operator=(SeqState&& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState& operator=(SeqState&& other) =
       delete;
   void ToProto(grpc_channelz_v2_Promise_CompositionKind kind,
                grpc_channelz_v2_Promise* promise_proto,
@@ -158,7 +158,7 @@ struct SeqState<Traits, P, F0> {
                      arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     switch (state) {
       case State::kState0: {
         GRPC_TRACE_LOG(promise_primitives, INFO)
@@ -243,14 +243,14 @@ struct SeqState<Traits, P, F0, F1> {
   GPR_NO_UNIQUE_ADDRESS State state = State::kState0;
   GPR_NO_UNIQUE_ADDRESS DebugLocation whence;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(P&& p, F0&& f0, F1&& f1,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(P&& p, F0&& f0, F1&& f1,
                                                 DebugLocation whence) noexcept
       : whence(whence) {
     Construct(&prior.prior.current_promise, std::forward<P>(p));
     Construct(&prior.prior.next_factory, std::forward<F0>(f0));
     Construct(&prior.next_factory, std::forward<F1>(f1));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~SeqState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~SeqState() {
     switch (state) {
       case State::kState0:
         Destruct(&prior.prior.current_promise);
@@ -267,10 +267,10 @@ struct SeqState<Traits, P, F0, F1> {
   tail1:
     Destruct(&prior.next_factory);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(
       const SeqState& other) noexcept = delete;
   SeqState& operator=(const SeqState& other) = delete;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(SeqState&& other) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(SeqState&& other) noexcept
       : state(other.state), whence(other.whence) {
     GRPC_DCHECK(state == State::kState0);
     Construct(&prior.prior.current_promise,
@@ -279,7 +279,7 @@ struct SeqState<Traits, P, F0, F1> {
               std::move(other.prior.prior.next_factory));
     Construct(&prior.next_factory, std::move(other.prior.next_factory));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState& operator=(SeqState&& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState& operator=(SeqState&& other) =
       delete;
   void ToProto(grpc_channelz_v2_Promise_CompositionKind kind,
                grpc_channelz_v2_Promise* promise_proto,
@@ -317,7 +317,7 @@ struct SeqState<Traits, P, F0, F1> {
                      arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     switch (state) {
       case State::kState0: {
         GRPC_TRACE_LOG(promise_primitives, INFO)
@@ -443,7 +443,7 @@ struct SeqState<Traits, P, F0, F1, F2> {
   GPR_NO_UNIQUE_ADDRESS State state = State::kState0;
   GPR_NO_UNIQUE_ADDRESS DebugLocation whence;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(P&& p, F0&& f0, F1&& f1,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(P&& p, F0&& f0, F1&& f1,
                                                 F2&& f2,
                                                 DebugLocation whence) noexcept
       : whence(whence) {
@@ -452,7 +452,7 @@ struct SeqState<Traits, P, F0, F1, F2> {
     Construct(&prior.prior.next_factory, std::forward<F1>(f1));
     Construct(&prior.next_factory, std::forward<F2>(f2));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~SeqState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~SeqState() {
     switch (state) {
       case State::kState0:
         Destruct(&prior.prior.prior.current_promise);
@@ -474,10 +474,10 @@ struct SeqState<Traits, P, F0, F1, F2> {
   tail2:
     Destruct(&prior.next_factory);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(
       const SeqState& other) noexcept = delete;
   SeqState& operator=(const SeqState& other) = delete;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(SeqState&& other) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(SeqState&& other) noexcept
       : state(other.state), whence(other.whence) {
     GRPC_DCHECK(state == State::kState0);
     Construct(&prior.prior.prior.current_promise,
@@ -488,7 +488,7 @@ struct SeqState<Traits, P, F0, F1, F2> {
               std::move(other.prior.prior.next_factory));
     Construct(&prior.next_factory, std::move(other.prior.next_factory));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState& operator=(SeqState&& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState& operator=(SeqState&& other) =
       delete;
   void ToProto(grpc_channelz_v2_Promise_CompositionKind kind,
                grpc_channelz_v2_Promise* promise_proto,
@@ -534,7 +534,7 @@ struct SeqState<Traits, P, F0, F1, F2> {
                      arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     switch (state) {
       case State::kState0: {
         GRPC_TRACE_LOG(promise_primitives, INFO)
@@ -701,7 +701,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3> {
   GPR_NO_UNIQUE_ADDRESS State state = State::kState0;
   GPR_NO_UNIQUE_ADDRESS DebugLocation whence;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(P&& p, F0&& f0, F1&& f1,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(P&& p, F0&& f0, F1&& f1,
                                                 F2&& f2, F3&& f3,
                                                 DebugLocation whence) noexcept
       : whence(whence) {
@@ -711,7 +711,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3> {
     Construct(&prior.prior.next_factory, std::forward<F2>(f2));
     Construct(&prior.next_factory, std::forward<F3>(f3));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~SeqState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~SeqState() {
     switch (state) {
       case State::kState0:
         Destruct(&prior.prior.prior.prior.current_promise);
@@ -738,10 +738,10 @@ struct SeqState<Traits, P, F0, F1, F2, F3> {
   tail3:
     Destruct(&prior.next_factory);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(
       const SeqState& other) noexcept = delete;
   SeqState& operator=(const SeqState& other) = delete;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(SeqState&& other) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(SeqState&& other) noexcept
       : state(other.state), whence(other.whence) {
     GRPC_DCHECK(state == State::kState0);
     Construct(&prior.prior.prior.prior.current_promise,
@@ -754,7 +754,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3> {
               std::move(other.prior.prior.next_factory));
     Construct(&prior.next_factory, std::move(other.prior.next_factory));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState& operator=(SeqState&& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState& operator=(SeqState&& other) =
       delete;
   void ToProto(grpc_channelz_v2_Promise_CompositionKind kind,
                grpc_channelz_v2_Promise* promise_proto,
@@ -808,7 +808,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3> {
                      arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     switch (state) {
       case State::kState0: {
         GRPC_TRACE_LOG(promise_primitives, INFO)
@@ -1023,7 +1023,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4> {
   GPR_NO_UNIQUE_ADDRESS State state = State::kState0;
   GPR_NO_UNIQUE_ADDRESS DebugLocation whence;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(P&& p, F0&& f0, F1&& f1,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(P&& p, F0&& f0, F1&& f1,
                                                 F2&& f2, F3&& f3, F4&& f4,
                                                 DebugLocation whence) noexcept
       : whence(whence) {
@@ -1036,7 +1036,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4> {
     Construct(&prior.prior.next_factory, std::forward<F3>(f3));
     Construct(&prior.next_factory, std::forward<F4>(f4));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~SeqState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~SeqState() {
     switch (state) {
       case State::kState0:
         Destruct(&prior.prior.prior.prior.prior.current_promise);
@@ -1068,10 +1068,10 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4> {
   tail4:
     Destruct(&prior.next_factory);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(
       const SeqState& other) noexcept = delete;
   SeqState& operator=(const SeqState& other) = delete;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(SeqState&& other) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(SeqState&& other) noexcept
       : state(other.state), whence(other.whence) {
     GRPC_DCHECK(state == State::kState0);
     Construct(&prior.prior.prior.prior.prior.current_promise,
@@ -1086,7 +1086,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4> {
               std::move(other.prior.prior.next_factory));
     Construct(&prior.next_factory, std::move(other.prior.next_factory));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState& operator=(SeqState&& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState& operator=(SeqState&& other) =
       delete;
   void ToProto(grpc_channelz_v2_Promise_CompositionKind kind,
                grpc_channelz_v2_Promise* promise_proto,
@@ -1148,7 +1148,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4> {
                      arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     switch (state) {
       case State::kState0: {
         GRPC_TRACE_LOG(promise_primitives, INFO)
@@ -1406,7 +1406,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5> {
   GPR_NO_UNIQUE_ADDRESS State state = State::kState0;
   GPR_NO_UNIQUE_ADDRESS DebugLocation whence;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(P&& p, F0&& f0, F1&& f1,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(P&& p, F0&& f0, F1&& f1,
                                                 F2&& f2, F3&& f3, F4&& f4,
                                                 F5&& f5,
                                                 DebugLocation whence) noexcept
@@ -1422,7 +1422,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5> {
     Construct(&prior.prior.next_factory, std::forward<F4>(f4));
     Construct(&prior.next_factory, std::forward<F5>(f5));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~SeqState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~SeqState() {
     switch (state) {
       case State::kState0:
         Destruct(&prior.prior.prior.prior.prior.prior.current_promise);
@@ -1459,10 +1459,10 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5> {
   tail5:
     Destruct(&prior.next_factory);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(
       const SeqState& other) noexcept = delete;
   SeqState& operator=(const SeqState& other) = delete;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(SeqState&& other) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(SeqState&& other) noexcept
       : state(other.state), whence(other.whence) {
     GRPC_DCHECK(state == State::kState0);
     Construct(
@@ -1481,7 +1481,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5> {
               std::move(other.prior.prior.next_factory));
     Construct(&prior.next_factory, std::move(other.prior.next_factory));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState& operator=(SeqState&& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState& operator=(SeqState&& other) =
       delete;
   void ToProto(grpc_channelz_v2_Promise_CompositionKind kind,
                grpc_channelz_v2_Promise* promise_proto,
@@ -1551,7 +1551,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5> {
                      arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     switch (state) {
       case State::kState0: {
         GRPC_TRACE_LOG(promise_primitives, INFO)
@@ -1853,7 +1853,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6> {
   GPR_NO_UNIQUE_ADDRESS State state = State::kState0;
   GPR_NO_UNIQUE_ADDRESS DebugLocation whence;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(P&& p, F0&& f0, F1&& f1,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(P&& p, F0&& f0, F1&& f1,
                                                 F2&& f2, F3&& f3, F4&& f4,
                                                 F5&& f5, F6&& f6,
                                                 DebugLocation whence) noexcept
@@ -1871,7 +1871,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6> {
     Construct(&prior.prior.next_factory, std::forward<F5>(f5));
     Construct(&prior.next_factory, std::forward<F6>(f6));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~SeqState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~SeqState() {
     switch (state) {
       case State::kState0:
         Destruct(&prior.prior.prior.prior.prior.prior.prior.current_promise);
@@ -1913,10 +1913,10 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6> {
   tail6:
     Destruct(&prior.next_factory);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(
       const SeqState& other) noexcept = delete;
   SeqState& operator=(const SeqState& other) = delete;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(SeqState&& other) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(SeqState&& other) noexcept
       : state(other.state), whence(other.whence) {
     GRPC_DCHECK(state == State::kState0);
     Construct(
@@ -1940,7 +1940,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6> {
               std::move(other.prior.prior.next_factory));
     Construct(&prior.next_factory, std::move(other.prior.next_factory));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState& operator=(SeqState&& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState& operator=(SeqState&& other) =
       delete;
   void ToProto(grpc_channelz_v2_Promise_CompositionKind kind,
                grpc_channelz_v2_Promise* promise_proto,
@@ -2018,7 +2018,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6> {
                      arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     switch (state) {
       case State::kState0: {
         GRPC_TRACE_LOG(promise_primitives, INFO)
@@ -2365,7 +2365,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7> {
   GPR_NO_UNIQUE_ADDRESS State state = State::kState0;
   GPR_NO_UNIQUE_ADDRESS DebugLocation whence;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(P&& p, F0&& f0, F1&& f1,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(P&& p, F0&& f0, F1&& f1,
                                                 F2&& f2, F3&& f3, F4&& f4,
                                                 F5&& f5, F6&& f6, F7&& f7,
                                                 DebugLocation whence) noexcept
@@ -2385,7 +2385,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7> {
     Construct(&prior.prior.next_factory, std::forward<F6>(f6));
     Construct(&prior.next_factory, std::forward<F7>(f7));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~SeqState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~SeqState() {
     switch (state) {
       case State::kState0:
         Destruct(
@@ -2433,10 +2433,10 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7> {
   tail7:
     Destruct(&prior.next_factory);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(
       const SeqState& other) noexcept = delete;
   SeqState& operator=(const SeqState& other) = delete;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(SeqState&& other) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(SeqState&& other) noexcept
       : state(other.state), whence(other.whence) {
     GRPC_DCHECK(state == State::kState0);
     Construct(&prior.prior.prior.prior.prior.prior.prior.prior.current_promise,
@@ -2462,7 +2462,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7> {
               std::move(other.prior.prior.next_factory));
     Construct(&prior.next_factory, std::move(other.prior.next_factory));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState& operator=(SeqState&& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState& operator=(SeqState&& other) =
       delete;
   void ToProto(grpc_channelz_v2_Promise_CompositionKind kind,
                grpc_channelz_v2_Promise* promise_proto,
@@ -2549,7 +2549,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7> {
                      arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     switch (state) {
       case State::kState0: {
         GRPC_TRACE_LOG(promise_primitives, INFO)
@@ -2942,7 +2942,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8> {
   GPR_NO_UNIQUE_ADDRESS State state = State::kState0;
   GPR_NO_UNIQUE_ADDRESS DebugLocation whence;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(P&& p, F0&& f0, F1&& f1,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(P&& p, F0&& f0, F1&& f1,
                                                 F2&& f2, F3&& f3, F4&& f4,
                                                 F5&& f5, F6&& f6, F7&& f7,
                                                 F8&& f8,
@@ -2967,7 +2967,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8> {
     Construct(&prior.prior.next_factory, std::forward<F7>(f7));
     Construct(&prior.next_factory, std::forward<F8>(f8));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~SeqState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~SeqState() {
     switch (state) {
       case State::kState0:
         Destruct(&prior.prior.prior.prior.prior.prior.prior.prior.prior
@@ -3022,10 +3022,10 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8> {
   tail8:
     Destruct(&prior.next_factory);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(
       const SeqState& other) noexcept = delete;
   SeqState& operator=(const SeqState& other) = delete;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(SeqState&& other) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(SeqState&& other) noexcept
       : state(other.state), whence(other.whence) {
     GRPC_DCHECK(state == State::kState0);
     Construct(
@@ -3056,7 +3056,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8> {
               std::move(other.prior.prior.next_factory));
     Construct(&prior.next_factory, std::move(other.prior.next_factory));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState& operator=(SeqState&& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState& operator=(SeqState&& other) =
       delete;
   void ToProto(grpc_channelz_v2_Promise_CompositionKind kind,
                grpc_channelz_v2_Promise* promise_proto,
@@ -3152,7 +3152,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8> {
                      arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     switch (state) {
       case State::kState0: {
         GRPC_TRACE_LOG(promise_primitives, INFO)
@@ -3593,7 +3593,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9> {
   GPR_NO_UNIQUE_ADDRESS State state = State::kState0;
   GPR_NO_UNIQUE_ADDRESS DebugLocation whence;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(P&& p, F0&& f0, F1&& f1,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(P&& p, F0&& f0, F1&& f1,
                                                 F2&& f2, F3&& f3, F4&& f4,
                                                 F5&& f5, F6&& f6, F7&& f7,
                                                 F8&& f8, F9&& f9,
@@ -3621,7 +3621,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9> {
     Construct(&prior.prior.next_factory, std::forward<F8>(f8));
     Construct(&prior.next_factory, std::forward<F9>(f9));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~SeqState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~SeqState() {
     switch (state) {
       case State::kState0:
         Destruct(&prior.prior.prior.prior.prior.prior.prior.prior.prior.prior
@@ -3683,10 +3683,10 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9> {
   tail9:
     Destruct(&prior.next_factory);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(
       const SeqState& other) noexcept = delete;
   SeqState& operator=(const SeqState& other) = delete;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(SeqState&& other) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(SeqState&& other) noexcept
       : state(other.state), whence(other.whence) {
     GRPC_DCHECK(state == State::kState0);
     Construct(&prior.prior.prior.prior.prior.prior.prior.prior.prior.prior
@@ -3721,7 +3721,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9> {
               std::move(other.prior.prior.next_factory));
     Construct(&prior.next_factory, std::move(other.prior.next_factory));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState& operator=(SeqState&& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState& operator=(SeqState&& other) =
       delete;
   void ToProto(grpc_channelz_v2_Promise_CompositionKind kind,
                grpc_channelz_v2_Promise* promise_proto,
@@ -3826,7 +3826,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9> {
                      arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     switch (state) {
       case State::kState0: {
         GRPC_TRACE_LOG(promise_primitives, INFO)
@@ -4316,7 +4316,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10> {
   GPR_NO_UNIQUE_ADDRESS State state = State::kState0;
   GPR_NO_UNIQUE_ADDRESS DebugLocation whence;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(P&& p, F0&& f0, F1&& f1,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(P&& p, F0&& f0, F1&& f1,
                                                 F2&& f2, F3&& f3, F4&& f4,
                                                 F5&& f5, F6&& f6, F7&& f7,
                                                 F8&& f8, F9&& f9, F10&& f10,
@@ -4347,7 +4347,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10> {
     Construct(&prior.prior.next_factory, std::forward<F9>(f9));
     Construct(&prior.next_factory, std::forward<F10>(f10));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~SeqState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~SeqState() {
     switch (state) {
       case State::kState0:
         Destruct(&prior.prior.prior.prior.prior.prior.prior.prior.prior.prior
@@ -4416,10 +4416,10 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10> {
   tail10:
     Destruct(&prior.next_factory);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(
       const SeqState& other) noexcept = delete;
   SeqState& operator=(const SeqState& other) = delete;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(SeqState&& other) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(SeqState&& other) noexcept
       : state(other.state), whence(other.whence) {
     GRPC_DCHECK(state == State::kState0);
     Construct(&prior.prior.prior.prior.prior.prior.prior.prior.prior.prior.prior
@@ -4458,7 +4458,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10> {
               std::move(other.prior.prior.next_factory));
     Construct(&prior.next_factory, std::move(other.prior.next_factory));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState& operator=(SeqState&& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState& operator=(SeqState&& other) =
       delete;
   void ToProto(grpc_channelz_v2_Promise_CompositionKind kind,
                grpc_channelz_v2_Promise* promise_proto,
@@ -4572,7 +4572,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10> {
                      arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     switch (state) {
       case State::kState0: {
         GRPC_TRACE_LOG(promise_primitives, INFO)
@@ -5113,7 +5113,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11> {
   GPR_NO_UNIQUE_ADDRESS State state = State::kState0;
   GPR_NO_UNIQUE_ADDRESS DebugLocation whence;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(P&& p, F0&& f0, F1&& f1,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(P&& p, F0&& f0, F1&& f1,
                                                 F2&& f2, F3&& f3, F4&& f4,
                                                 F5&& f5, F6&& f6, F7&& f7,
                                                 F8&& f8, F9&& f9, F10&& f10,
@@ -5148,7 +5148,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11> {
     Construct(&prior.prior.next_factory, std::forward<F10>(f10));
     Construct(&prior.next_factory, std::forward<F11>(f11));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~SeqState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~SeqState() {
     switch (state) {
       case State::kState0:
         Destruct(&prior.prior.prior.prior.prior.prior.prior.prior.prior.prior
@@ -5224,10 +5224,10 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11> {
   tail11:
     Destruct(&prior.next_factory);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(
       const SeqState& other) noexcept = delete;
   SeqState& operator=(const SeqState& other) = delete;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState(SeqState&& other) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState(SeqState&& other) noexcept
       : state(other.state), whence(other.whence) {
     GRPC_DCHECK(state == State::kState0);
     Construct(&prior.prior.prior.prior.prior.prior.prior.prior.prior.prior.prior
@@ -5270,7 +5270,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11> {
               std::move(other.prior.prior.next_factory));
     Construct(&prior.next_factory, std::move(other.prior.next_factory));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SeqState& operator=(SeqState&& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SeqState& operator=(SeqState&& other) =
       delete;
   void ToProto(grpc_channelz_v2_Promise_CompositionKind kind,
                grpc_channelz_v2_Promise* promise_proto,
@@ -5393,7 +5393,7 @@ struct SeqState<Traits, P, F0, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11> {
                      arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     switch (state) {
       case State::kState0: {
         GRPC_TRACE_LOG(promise_primitives, INFO)

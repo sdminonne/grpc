@@ -180,7 +180,7 @@ class Http2ClientTransport final : public ClientTransport,
 
   // Callers MUST ensure that the transport is not destroyed till the promise is
   // resolved or cancelled.
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto EndpointReadSlice(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto EndpointReadSlice(
       const size_t num_bytes) {
     return Map(endpoint_.ReadSlice(num_bytes),
                [this, num_bytes](absl::StatusOr<Slice>&& status) {
@@ -191,7 +191,7 @@ class Http2ClientTransport final : public ClientTransport,
 
   // Callers MUST ensure that the transport is not destroyed till the promise is
   // resolved or cancelled.
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto EndpointRead(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto EndpointRead(
       const size_t num_bytes) {
     return Map(endpoint_.Read(num_bytes),
                [this, num_bytes](absl::StatusOr<SliceBuffer>&& status) {
@@ -243,7 +243,7 @@ class Http2ClientTransport final : public ClientTransport,
 
   Http2Status ProcessMetadata(RefCountedPtr<Stream> stream);
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Http2Status
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Http2Status
   ProcessOneIncomingFrame(Http2Frame&& frame) {
     GRPC_HTTP2_CLIENT_DLOG << "Http2ClientTransport::ProcessOneIncomingFrame";
     return std::visit(

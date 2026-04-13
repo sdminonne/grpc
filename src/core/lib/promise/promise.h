@@ -58,13 +58,13 @@ template <typename T>
 class Immediate {
  public:
   template <typename U>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit Immediate(U value)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit Immediate(U value)
       : value_(std::move(value)) {}
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit Immediate(T&& value)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit Immediate(T&& value)
       : value_(std::forward<T>(value)) {}
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<T> operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<T> operator()() {
     return std::move(value_);
   }
 
@@ -83,7 +83,7 @@ Immediate(T&& value) {
 
 // Return status Ok immediately
 struct ImmediateOkStatus {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<absl::Status> operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<absl::Status> operator()() {
     return absl::OkStatus();
   }
 };

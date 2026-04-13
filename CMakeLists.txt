@@ -33,6 +33,7 @@ set(gRPC_CPP_SOVERSION    "1.81")
 set(PACKAGE_STRING        "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_TARNAME       "${PACKAGE_NAME}-${PACKAGE_VERSION}")
 set(PACKAGE_BUGREPORT     "https://github.com/grpc/grpc/issues/")
+set (CMAKE_CXX_STANDARD 20)
 project(${PACKAGE_NAME} LANGUAGES C CXX)
 
 if(BUILD_SHARED_LIBS AND MSVC)
@@ -461,7 +462,7 @@ if(WIN32)
   set(_gRPC_ALLTARGETS_LIBRARIES ${_gRPC_ALLTARGETS_LIBRARIES} ws2_32 crypt32)
   set(_gRPC_STATIC_WIN32 STATIC)
 endif()
-  
+
 if(BUILD_SHARED_LIBS AND WIN32)
 
 # Currently for shared lib on Windows (i.e. a DLL) certain bits of source code

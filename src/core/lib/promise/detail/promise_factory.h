@@ -126,7 +126,7 @@ struct OnceToken {};
 // Promote a callable(A) -> T | Poll<T> to a PromiseFactory(A) -> Promise<T> by
 // capturing A.
 template <typename Token, typename A, typename F>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline 
     absl::enable_if_t<!IsVoidCallable<ResultOf<F(A)>>::value,
                       PromiseLike<Curried<RemoveCVRef<F>, A>>>
     PromiseFactoryImpl(Token, F&& f, A&& arg) {
@@ -204,7 +204,7 @@ PromiseFactoryImpl(Token, F& f, A&& arg) {
 // Given a callable() -> Promise<T>, promote it to a
 // PromiseFactory(A) -> Promise<T> by dropping the first argument.
 template <typename Token, typename A, typename F>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline 
     absl::enable_if_t<IsVoidCallable<ResultOf<F()>>::value,
                       PromiseLike<decltype(std::declval<F>()())>>
     PromiseFactoryImpl(Token, F&& f, A&&) {
@@ -214,7 +214,7 @@ GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION
 
 // Given a callable() -> Promise<T>, name it a PromiseFactory and use it.
 template <typename Token, typename F>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline 
     absl::enable_if_t<IsVoidCallable<ResultOf<F()>>::value,
                       PromiseLike<decltype(std::declval<F>()())>>
     PromiseFactoryImpl(Token, F&& f) {
@@ -236,10 +236,10 @@ class OncePromiseFactory {
                                               std::declval<A>()));
   using UnderlyingFactory = F;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit OncePromiseFactory(F&& f)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit OncePromiseFactory(F&& f)
       : f_(std::forward<F>(f)) {}
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Promise Make(Arg&& a) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Promise Make(Arg&& a) {
     return PromiseFactoryImpl(OnceToken{}, std::move(f_), std::forward<Arg>(a));
   }
 };
@@ -254,10 +254,10 @@ class OncePromiseFactory<void, F> {
   using Promise = decltype(PromiseFactoryImpl(OnceToken{}, std::move(f_)));
   using UnderlyingFactory = F;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit OncePromiseFactory(F&& f)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit OncePromiseFactory(F&& f)
       : f_(std::forward<F>(f)) {}
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Promise Make() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Promise Make() {
     return PromiseFactoryImpl(OnceToken{}, std::move(f_));
   }
 };
@@ -276,21 +276,21 @@ class RepeatedPromiseFactory {
   using Promise =
       decltype(PromiseFactoryImpl(RepeatableToken{}, f_, std::declval<A>()));
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit RepeatedPromiseFactory(F&& f)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit RepeatedPromiseFactory(F&& f)
       : f_(std::forward<F>(f)) {}
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Promise Make(Arg&& a) const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Promise Make(Arg&& a) const {
     return PromiseFactoryImpl(RepeatableToken{}, f_, std::forward<Arg>(a));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Promise Make(Arg&& a) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Promise Make(Arg&& a) {
     return PromiseFactoryImpl(RepeatableToken{}, f_, std::forward<Arg>(a));
   }
   template <typename U>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Promise Make(U&& u) const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Promise Make(U&& u) const {
     return PromiseFactoryImpl(RepeatableToken{}, f_, std::forward<U>(u));
   }
   template <typename U>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Promise Make(U&& u) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Promise Make(U&& u) {
     return PromiseFactoryImpl(RepeatableToken{}, f_, std::forward<U>(u));
   }
 };
@@ -304,13 +304,13 @@ class RepeatedPromiseFactory<void, F> {
   using Arg = void;
   using Promise = decltype(PromiseFactoryImpl(RepeatableToken{}, f_));
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit RepeatedPromiseFactory(F&& f)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit RepeatedPromiseFactory(F&& f)
       : f_(std::forward<F>(f)) {}
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Promise Make() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Promise Make() const {
     return PromiseFactoryImpl(RepeatableToken{}, f_);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Promise Make() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Promise Make() {
     return PromiseFactoryImpl(RepeatableToken{}, f_);
   }
 };

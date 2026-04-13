@@ -358,12 +358,12 @@ class Party : public Activity, private Wakeable {
   Waker MakeNonOwningWaker() final;
   std::string ActivityDebugTag(WakeupMask wakeup_mask) const final;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void IncrementRefCount() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void IncrementRefCount() {
     const uint64_t prev_state =
         state_.fetch_add(kOneRef, std::memory_order_relaxed);
     LogStateChange("IncrementRefCount", prev_state, prev_state + kOneRef);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Unref() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Unref() {
     uint64_t prev_state = state_.fetch_sub(kOneRef, std::memory_order_acq_rel);
     LogStateChange("Unref", prev_state, prev_state - kOneRef);
     if ((prev_state & kRefMask) == kOneRef) PartyIsOver();
@@ -640,7 +640,7 @@ class Party : public Activity, private Wakeable {
   }
 
   template <bool kReffed>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void WakeupFromState(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void WakeupFromState(
       uint64_t cur_state, WakeupMask wakeup_mask) {
     GRPC_LATENT_SEE_SCOPE("Party::WakeupFromState");
     GRPC_DCHECK_NE(wakeup_mask & kWakeupMask, 0u)
@@ -687,7 +687,7 @@ class Party : public Activity, private Wakeable {
 
   static uint64_t NextAllocationMask(uint64_t current_allocation_mask);
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void LogStateChange(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void LogStateChange(
       const char* op, uint64_t prev_state, uint64_t new_state,
       DebugLocation loc = {}) {
     GRPC_TRACE_LOG(party_state, INFO).AtLocation(loc.file(), loc.line())

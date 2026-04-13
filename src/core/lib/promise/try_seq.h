@@ -80,11 +80,11 @@ struct TrySeqTraitsWithSfinae {
   using UnwrappedType = T;
   using WrappedType = absl::StatusOr<T>;
   template <typename Next>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static auto CallFactory(Next* next,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static auto CallFactory(Next* next,
                                                                T&& value) {
     return next->Make(std::forward<T>(value));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsOk(const T&) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsOk(const T&) {
     return true;
   }
   static const char* ErrorString(const T&) { abort(); }
@@ -93,7 +93,7 @@ struct TrySeqTraitsWithSfinae {
     abort();
   }
   template <typename Result, typename RunNext>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Poll<Result>
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Poll<Result>
   CheckResultAndRunNext(T&& prior, RunNext run_next) {
     return run_next(std::forward<T>(prior));
   }
@@ -104,11 +104,11 @@ struct TrySeqTraitsWithSfinae<absl::StatusOr<T>> {
   using UnwrappedType = T;
   using WrappedType = absl::StatusOr<T>;
   template <typename Next>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static auto CallFactory(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static auto CallFactory(
       Next* next, absl::StatusOr<T>&& status) {
     return next->Make(std::move(*status));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsOk(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsOk(
       const absl::StatusOr<T>& status) {
     return status.ok();
   }
@@ -116,12 +116,12 @@ struct TrySeqTraitsWithSfinae<absl::StatusOr<T>> {
     return status.status().ToString();
   }
   template <typename R>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static R ReturnValue(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static R ReturnValue(
       absl::StatusOr<T>&& status) {
     return FailureStatusCast<R>(status.status());
   }
   template <typename Result, typename RunNext>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Poll<Result>
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Poll<Result>
   CheckResultAndRunNext(absl::StatusOr<T>&& prior, RunNext run_next) {
     if (!prior.ok()) return FailureStatusCast<Result>(prior.status());
     return run_next(std::forward<absl::StatusOr<T>>(prior));
@@ -164,23 +164,23 @@ struct TrySeqTraitsWithSfinae<
   using UnwrappedType = void;
   using WrappedType = T;
   template <typename Next>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static auto CallFactory(Next* next,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static auto CallFactory(Next* next,
                                                                T&&) {
     return next->Make();
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsOk(const T& status) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsOk(const T& status) {
     return IsStatusOk(status);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static std::string ErrorString(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static std::string ErrorString(
       const T& status) {
     return IsStatusOk(status) ? "OK" : "FAILED";
   }
   template <typename R>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static R ReturnValue(T&& status) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static R ReturnValue(T&& status) {
     return FailureStatusCast<R>(std::move(status));
   }
   template <typename Result, typename RunNext>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Poll<Result>
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Poll<Result>
   CheckResultAndRunNext(T&& prior, RunNext run_next) {
     if (!IsStatusOk(prior)) return Result(std::forward<T>(prior));
     return run_next(std::forward<T>(prior));
@@ -195,24 +195,24 @@ struct TrySeqTraitsWithSfinae<
   using UnwrappedType = decltype(TakeValue(std::declval<T>()));
   using WrappedType = T;
   template <typename Next>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static auto CallFactory(Next* next,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static auto CallFactory(Next* next,
                                                                T&& status) {
     return next->Make(TakeValue(std::forward<T>(status)));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsOk(const T& status) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsOk(const T& status) {
     return IsStatusOk(status);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static std::string ErrorString(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static std::string ErrorString(
       const T& status) {
     return IsStatusOk(status) ? "OK" : "FAILED";
   }
   template <typename R>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static R ReturnValue(T&& status) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static R ReturnValue(T&& status) {
     GRPC_DCHECK(!IsStatusOk(status));
     return FailureStatusCast<R>(status.status());
   }
   template <typename Result, typename RunNext>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Poll<Result>
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Poll<Result>
   CheckResultAndRunNext(T&& prior, RunNext run_next) {
     if (!IsStatusOk(prior)) return Result(std::forward<T>(prior));
     return run_next(std::forward<T>(prior));
@@ -223,11 +223,11 @@ struct TrySeqTraitsWithSfinae<absl::Status> {
   using UnwrappedType = void;
   using WrappedType = absl::Status;
   template <typename Next>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static auto CallFactory(Next* next,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static auto CallFactory(Next* next,
                                                                absl::Status&&) {
     return next->Make();
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsOk(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsOk(
       const absl::Status& status) {
     return status.ok();
   }
@@ -235,12 +235,12 @@ struct TrySeqTraitsWithSfinae<absl::Status> {
     return status.ToString();
   }
   template <typename R>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static R ReturnValue(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static R ReturnValue(
       absl::Status&& status) {
     return FailureStatusCast<R>(std::move(status));
   }
   template <typename Result, typename RunNext>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Poll<Result>
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Poll<Result>
   CheckResultAndRunNext(absl::Status&& prior, RunNext run_next) {
     if (!prior.ok()) return StatusCast<Result>(std::move(prior));
     return run_next(std::forward<absl::Status>(prior));
@@ -253,13 +253,13 @@ using TrySeqTraits = TrySeqTraitsWithSfinae<T>;
 template <typename P, typename... Fs>
 class TrySeq {
  public:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit TrySeq(P&& promise,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit TrySeq(P&& promise,
                                                        Fs&&... factories,
                                                        DebugLocation whence)
       : state_(std::forward<P>(promise), std::forward<Fs>(factories)...,
                whence) {}
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto operator()() {
     return state_.PollOnce();
   }
 
@@ -341,7 +341,7 @@ GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline auto TrySeq(
 
 template <typename F0, typename F1, typename F2, typename F3, typename F4,
           typename F5>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto TrySeq(F0&& f0, F1&& f1, F2&& f2,
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto TrySeq(F0&& f0, F1&& f1, F2&& f2,
                                                  F3&& f3, F4&& f4, F5&& f5,
                                                  DebugLocation whence = {}) {
   return promise_detail::TrySeq<std::decay_t<F0>, std::decay_t<F1>,
@@ -353,7 +353,7 @@ GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto TrySeq(F0&& f0, F1&& f1, F2&& f2,
 
 template <typename F0, typename F1, typename F2, typename F3, typename F4,
           typename F5, typename F6>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto TrySeq(F0&& f0, F1&& f1, F2&& f2,
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto TrySeq(F0&& f0, F1&& f1, F2&& f2,
                                                  F3&& f3, F4&& f4, F5&& f5,
                                                  F6&& f6,
                                                  DebugLocation whence = {}) {
@@ -367,7 +367,7 @@ GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto TrySeq(F0&& f0, F1&& f1, F2&& f2,
 
 template <typename F0, typename F1, typename F2, typename F3, typename F4,
           typename F5, typename F6, typename F7>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto TrySeq(F0&& f0, F1&& f1, F2&& f2,
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto TrySeq(F0&& f0, F1&& f1, F2&& f2,
                                                  F3&& f3, F4&& f4, F5&& f5,
                                                  F6&& f6, F7&& f7,
                                                  DebugLocation whence = {}) {
@@ -388,7 +388,7 @@ GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto TrySeq(F0&& f0, F1&& f1, F2&& f2,
 //   }
 //   return argument;
 template <typename Iter, typename Factory, typename Argument>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto TrySeqIter(Iter begin, Iter end,
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto TrySeqIter(Iter begin, Iter end,
                                                      Argument&& argument,
                                                      Factory&& factory) {
   return promise_detail::TrySeqIter<Iter, std::decay_t<Factory>,

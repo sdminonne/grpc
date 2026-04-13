@@ -1647,14 +1647,14 @@ struct NextValueTraits<filters_detail::NextMessage<on_progress>> {
   using NextMsg = filters_detail::NextMessage<on_progress>;
   using Value = MessageHandle;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static NextValueType Type(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static NextValueType Type(
       const NextMsg& t) {
     if (!t.ok()) return NextValueType::kError;
     if (t.has_value()) return NextValueType::kValue;
     return NextValueType::kEndOfStream;
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static MessageHandle TakeValue(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static MessageHandle TakeValue(
       NextMsg& t) {
     return t.TakeValue();
   }
@@ -1664,7 +1664,7 @@ struct NextValueTraits<filters_detail::NextMessage<on_progress>> {
 template <void (CallState::*on_progress)()>
 struct FailureStatusCastImpl<filters_detail::NextMessage<on_progress>,
                              StatusFlag> {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static filters_detail::NextMessage<
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static filters_detail::NextMessage<
       on_progress>
   Cast(StatusFlag flag) {
     GRPC_DCHECK_EQ(flag, Failure{});
@@ -1678,11 +1678,11 @@ struct TrySeqTraitsWithSfinae<filters_detail::NextMessage<on_progress>> {
   using UnwrappedType = MessageHandle;
   using WrappedType = filters_detail::NextMessage<on_progress>;
   template <typename Next>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static auto CallFactory(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static auto CallFactory(
       Next* next, WrappedType&& value) {
     return next->Make(value.TakeValue());
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsOk(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsOk(
       const WrappedType& value) {
     return value.ok();
   }
@@ -1696,13 +1696,13 @@ struct TrySeqTraitsWithSfinae<filters_detail::NextMessage<on_progress>> {
     return WrappedType(Failure{});
   }
   template <typename F, typename Elem>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static auto CallSeqFactory(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static auto CallSeqFactory(
       F& f, Elem&& elem, WrappedType value)
       -> decltype(f(std::forward<Elem>(elem), std::declval<MessageHandle>())) {
     return f(std::forward<Elem>(elem), value.TakeValue());
   }
   template <typename Result, typename RunNext>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Poll<Result>
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Poll<Result>
   CheckResultAndRunNext(WrappedType&& prior, RunNext run_next) {
     if (!prior.ok()) return WrappedType(prior.status());
     return run_next(std::forward<WrappedType>(prior));

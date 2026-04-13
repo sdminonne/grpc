@@ -62,19 +62,19 @@ struct StatusCastImpl;
 
 template <typename To>
 struct StatusCastImpl<To, To> {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static To Cast(To&& t) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static To Cast(To&& t) {
     return std::move(t);
   }
 };
 
 template <typename To>
 struct StatusCastImpl<To, const To&> {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static To Cast(const To& t) { return t; }
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static To Cast(const To& t) { return t; }
 };
 
 template <typename T>
 struct StatusCastImpl<absl::Status, absl::StatusOr<T>> {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static absl::Status Cast(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static absl::Status Cast(
       absl::StatusOr<T>&& t) {
     return std::move(t.status());
   }
@@ -82,7 +82,7 @@ struct StatusCastImpl<absl::Status, absl::StatusOr<T>> {
 
 template <typename T>
 struct StatusCastImpl<absl::Status, absl::StatusOr<T>&> {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static absl::Status Cast(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static absl::Status Cast(
       const absl::StatusOr<T>& t) {
     return t.status();
   }
@@ -90,7 +90,7 @@ struct StatusCastImpl<absl::Status, absl::StatusOr<T>&> {
 
 template <typename T>
 struct StatusCastImpl<absl::Status, const absl::StatusOr<T>&> {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static absl::Status Cast(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static absl::Status Cast(
       const absl::StatusOr<T>& t) {
     return t.status();
   }
@@ -112,7 +112,7 @@ struct FailureStatusCastImpl : public StatusCastImpl<To, From> {};
 
 template <typename T>
 struct FailureStatusCastImpl<absl::StatusOr<T>, absl::Status> {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static absl::StatusOr<T> Cast(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static absl::StatusOr<T> Cast(
       absl::Status&& t) {
     return std::move(t);
   }
@@ -120,7 +120,7 @@ struct FailureStatusCastImpl<absl::StatusOr<T>, absl::Status> {
 
 template <typename T>
 struct FailureStatusCastImpl<absl::StatusOr<T>, const absl::Status&> {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static absl::StatusOr<T> Cast(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static absl::StatusOr<T> Cast(
       const absl::Status& t) {
     return t;
   }

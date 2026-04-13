@@ -94,7 +94,7 @@ struct LoopTraits;
 template <typename T>
 struct LoopTraits<LoopCtl<T>> {
   using Result = T;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static LoopCtl<T> ToLoopCtl(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static LoopCtl<T> ToLoopCtl(
       LoopCtl<T> value) {
     return value;
   }
@@ -103,7 +103,7 @@ struct LoopTraits<LoopCtl<T>> {
 template <typename T>
 struct LoopTraits<absl::StatusOr<LoopCtl<T>>> {
   using Result = absl::StatusOr<T>;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static LoopCtl<Result> ToLoopCtl(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static LoopCtl<Result> ToLoopCtl(
       absl::StatusOr<LoopCtl<T>> value) {
     if (!value.ok()) return value.status();
     auto& inner = *value;
@@ -115,7 +115,7 @@ struct LoopTraits<absl::StatusOr<LoopCtl<T>>> {
 template <>
 struct LoopTraits<absl::StatusOr<LoopCtl<absl::Status>>> {
   using Result = absl::Status;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static LoopCtl<Result> ToLoopCtl(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static LoopCtl<Result> ToLoopCtl(
       absl::StatusOr<LoopCtl<absl::Status>> value) {
     if (!value.ok()) return value.status();
     const auto& inner = *value;
@@ -138,13 +138,13 @@ class Loop {
  public:
   using Result = typename promise_detail::LoopTraits<PromiseResult>::Result;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit Loop(F&& f)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit Loop(F&& f)
       : factory_(std::forward<F>(f)) {}
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~Loop() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~Loop() {
     if (started_) Destruct(&promise_);
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Loop(Loop&& loop) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Loop(Loop&& loop) noexcept
       : factory_(std::move(loop.factory_)), started_(loop.started_) {
     if (started_) Construct(&promise_, std::move(loop.promise_));
   }
@@ -152,7 +152,7 @@ class Loop {
   Loop(const Loop& loop) = delete;
   Loop& operator=(const Loop& loop) = delete;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> operator()() {
     GRPC_TRACE_LOG(promise_primitives, INFO)
         << "loop[" << this << "] begin poll started=" << started_;
     if (!started_) {

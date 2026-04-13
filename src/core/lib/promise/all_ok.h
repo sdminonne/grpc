@@ -67,21 +67,21 @@ struct AllOkTraits {
   template <typename T>
   using ResultType = Result;
   template <typename T>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsOk(const T& x) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsOk(const T& x) {
     return IsStatusOk(x);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Empty Unwrapped(StatusFlag) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Empty Unwrapped(StatusFlag) {
     return Empty{};
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Empty Unwrapped(absl::Status) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Empty Unwrapped(absl::Status) {
     return Empty{};
   }
   template <typename R, typename T>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static R EarlyReturn(T&& x) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static R EarlyReturn(T&& x) {
     return StatusCast<R>(std::forward<T>(x));
   }
   template <typename... A>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Result FinalReturn(A&&...) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Result FinalReturn(A&&...) {
     return Result{};
   }
 };
@@ -91,9 +91,9 @@ template <typename Result, typename... Promises>
 class AllOk {
  public:
   template <typename... Args>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit AllOk(Args&&... args)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit AllOk(Args&&... args)
       : state_(std::forward<Args>(args)...) {}
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto operator()() {
     return state_.PollOnce();
   }
 

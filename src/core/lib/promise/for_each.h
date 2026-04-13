@@ -46,7 +46,7 @@ struct Done;
 
 template <>
 struct Done<absl::Status> {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static absl::Status Make(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static absl::Status Make(
       bool cancelled) {
     return cancelled ? absl::CancelledError() : absl::OkStatus();
   }
@@ -54,14 +54,14 @@ struct Done<absl::Status> {
 
 template <>
 struct Done<StatusFlag> {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static StatusFlag Make(bool cancelled) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static StatusFlag Make(bool cancelled) {
     return StatusFlag(!cancelled);
   }
 };
 
 template <>
 struct Done<Success> {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static StatusFlag Make(bool cancelled) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static StatusFlag Make(bool cancelled) {
     return StatusFlag(!cancelled);
   }
 };
@@ -79,13 +79,13 @@ template <typename T>
 struct NextValueTraits<T, absl::void_t<typename T::value_type>> {
   using Value = typename T::value_type;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static NextValueType Type(const T& t) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static NextValueType Type(const T& t) {
     if (t.has_value()) return NextValueType::kValue;
     if (t.cancelled()) return NextValueType::kError;
     return NextValueType::kEndOfStream;
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Value&& TakeValue(T& t) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Value&& TakeValue(T& t) {
     return std::move(*t);
   }
 };
@@ -94,7 +94,7 @@ template <typename T>
 struct NextValueTraits<ValueOrFailure<std::optional<T>>> {
   using Value = T;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static NextValueType Type(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static NextValueType Type(
       const ValueOrFailure<std::optional<T>>& t) {
     if (t.ok()) {
       if (t.value().has_value()) return NextValueType::kValue;
@@ -103,7 +103,7 @@ struct NextValueTraits<ValueOrFailure<std::optional<T>>> {
     return NextValueType::kError;
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Value&& TakeValue(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Value&& TakeValue(
       ValueOrFailure<std::optional<T>>& t) {
     return std::move(**t);
   }
@@ -125,14 +125,14 @@ class ForEach {
  public:
   using Result = decltype(Done<ActionResult>::Make(false));
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ForEach(Reader&& reader, Action&& action,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ForEach(Reader&& reader, Action&& action,
                                                DebugLocation whence = {})
       : reader_(std::forward<Reader>(reader)),
         action_factory_(std::forward<Action>(action)),
         whence_(whence) {
     Construct(&reader_next_, reader_.Next());
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~ForEach() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~ForEach() {
     if (reading_next_) {
       Destruct(&reader_next_);
     } else {
@@ -202,7 +202,7 @@ class ForEach {
                         ":", whence_.line(), "]: ");
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollReaderNext() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollReaderNext() {
     GRPC_TRACE_LOG(promise_primitives, INFO) << DebugTag() << " PollReaderNext";
     auto r = reader_next_();
     if (auto* p = r.value_if_ready()) {

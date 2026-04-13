@@ -41,7 +41,7 @@ struct ExperimentMetadata {
 #ifndef GRPC_EXPERIMENTS_ARE_FINAL
 class ExperimentFlags {
  public:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsExperimentEnabled(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsExperimentEnabled(
       size_t experiment_id) {
     auto bit = experiment_id % kFlagsPerWord;
     auto word = experiment_id / kFlagsPerWord;
@@ -52,7 +52,7 @@ class ExperimentFlags {
   }
 
   template <size_t kExperimentId>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsExperimentEnabled() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsExperimentEnabled() {
     auto bit = kExperimentId % kFlagsPerWord;
     auto word = kExperimentId / kFlagsPerWord;
     auto cur = experiment_flags_[word].load(std::memory_order_relaxed);

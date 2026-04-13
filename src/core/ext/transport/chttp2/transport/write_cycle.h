@@ -49,27 +49,27 @@ class WriteQuota {
   WriteQuota& operator=(WriteQuota&&) = delete;
 
   // Increments the bytes consumed for the current write attempt.
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void IncrementBytesConsumed(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void IncrementBytesConsumed(
       size_t bytes_consumed) {
     bytes_consumed_ += bytes_consumed;
   }
 
   // Returns the number of bytes remaining that can be written in the current
   // write attempt.
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION size_t GetWriteBytesRemaining() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  size_t GetWriteBytesRemaining() const {
     return (target_write_size_ > bytes_consumed_)
                ? target_write_size_ - bytes_consumed_
                : 0u;
   }
 
   // Returns the target write size for the current write attempt.
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION size_t GetTargetWriteSize() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  size_t GetTargetWriteSize() const {
     return target_write_size_;
   }
 
   std::string DebugString() const;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION size_t TestOnlyBytesConsumed() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  size_t TestOnlyBytesConsumed() const {
     return bytes_consumed_;
   }
 
@@ -93,41 +93,41 @@ class WriteBufferTracker {
   WriteBufferTracker(WriteBufferTracker&&) = default;
   WriteBufferTracker& operator=(WriteBufferTracker&&) = delete;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void AddRegularFrame(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void AddRegularFrame(
       Http2Frame&& frame) {
     regular_frames_.emplace_back(std::forward<Http2Frame>(frame));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void AddUrgentFrame(Http2Frame&& frame) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void AddUrgentFrame(Http2Frame&& frame) {
     urgent_frames_.emplace_back(std::forward<Http2Frame>(frame));
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void ReserveRegularFrames(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void ReserveRegularFrames(
       const size_t size) {
     regular_frames_.reserve(regular_frames_.size() + size);
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool CanSerializeUrgentFrames() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool CanSerializeUrgentFrames() const {
     return !urgent_frames_.empty();
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool CanSerializeRegularFrames() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool CanSerializeRegularFrames() const {
     return (!regular_frames_.empty() || is_first_write_);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool HasFirstWriteHappened() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool HasFirstWriteHappened() const {
     return !is_first_write_;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION size_t GetUrgentFrameCount() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  size_t GetUrgentFrameCount() const {
     return urgent_frames_.size();
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION size_t GetRegularFrameCount() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  size_t GetRegularFrameCount() const {
     return regular_frames_.size();
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline 
   absl::InlinedVector<Http2Frame, kInlinedRegularFramesSize>&
   TestOnlyRegularFrames() {
     return regular_frames_;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline 
   absl::InlinedVector<Http2Frame, kInlinedUrgentFramesSize>&
   TestOnlyUrgentFrames() {
     return urgent_frames_;
@@ -135,7 +135,7 @@ class WriteBufferTracker {
 
   std::string DebugString() const;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Http2Frame* MutableLastRegularFrame() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Http2Frame* MutableLastRegularFrame() {
     return regular_frames_.empty() ? nullptr : &regular_frames_.back();
   }
 
@@ -204,23 +204,23 @@ class FrameSender {
   FrameSender(const FrameSender&) = delete;
   FrameSender& operator=(const FrameSender&) = delete;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void AddRegularFrame(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void AddRegularFrame(
       Http2Frame&& frame) {
     quota_.IncrementBytesConsumed(GetFrameMemoryUsage(frame));
     tracker_.AddRegularFrame(std::forward<Http2Frame>(frame));
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void AddUrgentFrame(Http2Frame&& frame) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void AddUrgentFrame(Http2Frame&& frame) {
     // TODO(akshitpatel) [PH2][P5]: Maybe urgent frames should consume quota
     // too?
     tracker_.AddUrgentFrame(std::forward<Http2Frame>(frame));
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void ReserveRegularFrames(size_t size) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void ReserveRegularFrames(size_t size) {
     tracker_.ReserveRegularFrames(size);
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Http2Frame* MutableLastRegularFrame() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Http2Frame* MutableLastRegularFrame() {
     return tracker_.MutableLastRegularFrame();
   }
 
@@ -247,43 +247,43 @@ class WriteCycle {
   using SerializeStats = WriteBufferTracker::SerializeStats;
 
   // Wrappers for Chttp2WriteSizePolicy
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void BeginWrite(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void BeginWrite(
       const size_t bytes_to_write) {
     write_size_policy_->BeginWrite(bytes_to_write);
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void EndWrite(bool success) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void EndWrite(bool success) {
     write_size_policy_->EndWrite(success);
   }
 
   // Wrappers for WriteQuota
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION size_t GetWriteBytesRemaining() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  size_t GetWriteBytesRemaining() const {
     return write_quota_.GetWriteBytesRemaining();
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SliceBuffer
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SliceBuffer
   SerializeRegularFrames(SerializeStats stats) {
     return write_buffer_tracker_.SerializeRegularFrames(stats);
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION SliceBuffer
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  SliceBuffer
   SerializeUrgentFrames(SerializeStats stats) {
     return write_buffer_tracker_.SerializeUrgentFrames(stats);
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool CanSerializeUrgentFrames() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool CanSerializeUrgentFrames() const {
     return write_buffer_tracker_.CanSerializeUrgentFrames();
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION size_t GetUrgentFrameCount() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  size_t GetUrgentFrameCount() const {
     return write_buffer_tracker_.GetUrgentFrameCount();
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION size_t GetRegularFrameCount() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  size_t GetRegularFrameCount() const {
     return write_buffer_tracker_.GetRegularFrameCount();
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool CanSerializeRegularFrames() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool CanSerializeRegularFrames() const {
     return write_buffer_tracker_.CanSerializeRegularFrames();
   }
 
@@ -293,12 +293,12 @@ class WriteCycle {
   absl::InlinedVector<Http2Frame, WriteBufferTracker::kInlinedUrgentFramesSize>&
   TestOnlyUrgentFrames();
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION WriteBufferTracker&
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  WriteBufferTracker&
   write_buffer_tracker() {
     return write_buffer_tracker_;
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION FrameSender GetFrameSender() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  FrameSender GetFrameSender() {
     return FrameSender(write_buffer_tracker_, write_quota_);
   }
 
@@ -329,11 +329,11 @@ class TransportWriteContext {
 
   // Calls to this function MUST only be made between StartWriteCycle and
   // EndWriteCycle.
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION WriteCycle& GetWriteCycle() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  WriteCycle& GetWriteCycle() {
     return *write_cycle_;
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool IsFirstWrite() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool IsFirstWrite() const {
     return is_first_write_;
   }
 

@@ -60,7 +60,7 @@ class ThreadLocalContext : public ContextType<T> {
   ThreadLocalContext(const ThreadLocalContext&) = delete;
   ThreadLocalContext& operator=(const ThreadLocalContext&) = delete;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static T* get() { return current_; }
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static T* get() { return current_; }
 
  private:
   T* const old_;
@@ -81,7 +81,7 @@ class Context<T, absl::void_t<typename ContextSubclass<T>::Base>>
     : public Context<typename ContextSubclass<T>::Base> {
  public:
   using Context<typename ContextSubclass<T>::Base>::Context;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static T* get() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static T* get() {
     return DownCast<T*>(Context<typename ContextSubclass<T>::Base>::get());
   }
 };

@@ -172,14 +172,14 @@ namespace promise_detail {
 
 template <typename T>
 struct PollWrapper {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Poll<T> Wrap(T&& x) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Poll<T> Wrap(T&& x) {
     return Poll<T>(std::forward<T>(x));
   }
 };
 
 template <typename T>
 struct PollWrapper<Poll<T>> {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Poll<T> Wrap(Poll<T>&& x) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Poll<T> Wrap(Poll<T>&& x) {
     return std::forward<Poll<T>>(x);
   }
 };
@@ -210,14 +210,14 @@ class PromiseLike<
 
  public:
   // NOLINTNEXTLINE - internal detail that drastically simplifies calling code.
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION PromiseLike(F&& f)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  PromiseLike(F&& f)
       : f_(std::forward<F>(f)) {}
   template <typename Factory, typename... Args>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit PromiseLike(std::in_place_t,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit PromiseLike(std::in_place_t,
                                                             Factory&& f,
                                                             Args&&... args)
       : f_(std::forward<Factory>(f)(std::forward<Args>(args)...)) {}
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION WrappedResult operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  WrappedResult operator()() {
     // For cases where f_() already returns a Poll<OriginalResult>, WrapInPoll
     // triggers a redundant move on the OriginalResult. This poll function being
     // very widely used this quickly adds up if the move for the underlying type
@@ -247,14 +247,14 @@ class PromiseLike<
 
  public:
   // NOLINTNEXTLINE - internal detail that drastically simplifies calling code.
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION PromiseLike(F&& f)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  PromiseLike(F&& f)
       : f_(std::forward<F>(f)) {}
   template <typename Factory, typename... Args>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit PromiseLike(std::in_place_t,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit PromiseLike(std::in_place_t,
                                                             Factory&& f,
                                                             Args&&... args)
       : f_(std::forward<Factory>(f)(std::forward<Args>(args)...)) {}
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Empty> operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Empty> operator()() {
     f_();
     return Empty{};
   }

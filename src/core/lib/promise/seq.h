@@ -76,11 +76,11 @@ struct SeqTraits {
   using UnwrappedType = T;
   using WrappedType = T;
   template <typename Next>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static auto CallFactory(Next* next,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static auto CallFactory(Next* next,
                                                                T&& value) {
     return next->Make(std::forward<T>(value));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsOk(const T&) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsOk(const T&) {
     return true;
   }
   static const char* ErrorString(const T&) { abort(); }
@@ -89,7 +89,7 @@ struct SeqTraits {
     abort();
   }
   template <typename Result, typename PriorResult, typename RunNext>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Poll<Result>
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Poll<Result>
   CheckResultAndRunNext(PriorResult&& prior, RunNext run_next) {
     return run_next(std::forward<PriorResult>(prior));
   }
@@ -98,13 +98,13 @@ struct SeqTraits {
 template <typename P, typename... Fs>
 class Seq {
  public:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit Seq(P&& promise,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit Seq(P&& promise,
                                                     Fs&&... factories,
                                                     DebugLocation whence)
       : state_(std::forward<P>(promise), std::forward<Fs>(factories)...,
                whence) {}
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto operator()() {
     return state_.PollOnce();
   }
 
@@ -175,7 +175,7 @@ GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline auto Seq(
 
 template <typename F0, typename F1, typename F2, typename F3, typename F4,
           typename F5, typename F6>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto Seq(F0&& f0, F1&& f1, F2&& f2,
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto Seq(F0&& f0, F1&& f1, F2&& f2,
                                               F3&& f3, F4&& f4, F5&& f5,
                                               F6&& f6,
                                               DebugLocation whence = {}) {
@@ -189,7 +189,7 @@ GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto Seq(F0&& f0, F1&& f1, F2&& f2,
 
 template <typename F0, typename F1, typename F2, typename F3, typename F4,
           typename F5, typename F6, typename F7>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto Seq(F0&& f0, F1&& f1, F2&& f2,
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto Seq(F0&& f0, F1&& f1, F2&& f2,
                                               F3&& f3, F4&& f4, F5&& f5,
                                               F6&& f6, F7&& f7,
                                               DebugLocation whence = {}) {
@@ -203,7 +203,7 @@ GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto Seq(F0&& f0, F1&& f1, F2&& f2,
 
 template <typename F0, typename F1, typename F2, typename F3, typename F4,
           typename F5, typename F6, typename F7, typename F8>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto Seq(F0&& f0, F1&& f1, F2&& f2,
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto Seq(F0&& f0, F1&& f1, F2&& f2,
                                               F3&& f3, F4&& f4, F5&& f5,
                                               F6&& f6, F7&& f7, F8&& f8,
                                               DebugLocation whence = {}) {
@@ -218,7 +218,7 @@ GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto Seq(F0&& f0, F1&& f1, F2&& f2,
 
 template <typename F0, typename F1, typename F2, typename F3, typename F4,
           typename F5, typename F6, typename F7, typename F8, typename F9>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto Seq(F0&& f0, F1&& f1, F2&& f2,
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto Seq(F0&& f0, F1&& f1, F2&& f2,
                                               F3&& f3, F4&& f4, F5&& f5,
                                               F6&& f6, F7&& f7, F8&& f8,
                                               F9&& f9,
@@ -236,7 +236,7 @@ GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto Seq(F0&& f0, F1&& f1, F2&& f2,
 template <typename F0, typename F1, typename F2, typename F3, typename F4,
           typename F5, typename F6, typename F7, typename F8, typename F9,
           typename F10>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto Seq(F0&& f0, F1&& f1, F2&& f2,
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto Seq(F0&& f0, F1&& f1, F2&& f2,
                                               F3&& f3, F4&& f4, F5&& f5,
                                               F6&& f6, F7&& f7, F8&& f8,
                                               F9&& f9, F10&& f10,
@@ -254,7 +254,7 @@ GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto Seq(F0&& f0, F1&& f1, F2&& f2,
 template <typename F0, typename F1, typename F2, typename F3, typename F4,
           typename F5, typename F6, typename F7, typename F8, typename F9,
           typename F10, typename F11>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto Seq(F0&& f0, F1&& f1, F2&& f2,
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto Seq(F0&& f0, F1&& f1, F2&& f2,
                                               F3&& f3, F4&& f4, F5&& f5,
                                               F6&& f6, F7&& f7, F8&& f8,
                                               F9&& f9, F10&& f10, F11&& f11,
@@ -277,7 +277,7 @@ GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto Seq(F0&& f0, F1&& f1, F2&& f2,
 //   }
 //   return argument;
 template <typename Iter, typename Factory, typename Argument>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto SeqIter(Iter begin, Iter end,
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto SeqIter(Iter begin, Iter end,
                                                   Argument&& argument,
                                                   Factory&& factory) {
   return promise_detail::SeqIter<Iter, std::decay_t<Factory>,

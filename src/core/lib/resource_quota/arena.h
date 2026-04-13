@@ -87,7 +87,7 @@ class BaseArenaContextTraits {
 template <typename T>
 class ArenaContextTraits : public BaseArenaContextTraits {
  public:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static uint16_t id() { return id_; }
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static uint16_t id() { return id_; }
 
  private:
   static const uint16_t id_;
@@ -104,14 +104,14 @@ const uint16_t ArenaContextTraits<T>::id_ =
 
 template <typename T, typename SfinaeVoid = void>
 struct GetContextId {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static uint16_t id() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static uint16_t id() {
     return ArenaContextTraits<T>::id();
   }
 };
 
 template <typename T>
 struct GetContextId<T, std::void_t<typename ContextSubclass<T>::Base>> {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static uint16_t id() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static uint16_t id() {
     return GetContextId<typename ContextSubclass<T>::Base>::id();
   }
 };
@@ -305,7 +305,7 @@ class Arena final : public RefCounted<Arena, NonPolymorphicRefCount,
   // for modern promise-based code -- however legacy filter stack based code
   // often needs to access these directly.
   template <typename T>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION T* GetContext() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  T* GetContext() {
     return static_cast<T*>(contexts()[arena_detail::GetContextId<T>::id()]);
   }
 
@@ -365,7 +365,7 @@ class Arena final : public RefCounted<Arena, NonPolymorphicRefCount,
 
   void* AllocZone(size_t size);
   void Destroy() const;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void** contexts() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void** contexts() {
     return reinterpret_cast<void**>(this + 1);
   }
 
@@ -496,10 +496,10 @@ namespace promise_detail {
 template <typename T>
 class Context<T, absl::void_t<decltype(ArenaContextType<T>::Destroy)>> {
  public:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static T* get() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static T* get() {
     return GetContext<Arena>()->GetContext<T>();
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static void set(T* value) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static void set(T* value) {
     GetContext<Arena>()->SetContext(value);
   }
 };

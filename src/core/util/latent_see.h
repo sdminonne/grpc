@@ -249,14 +249,14 @@ class Sink {
 
 class Appender {
  public:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Appender()
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Appender()
       : Appender(active_sink_.load(std::memory_order_acquire)) {};
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit Appender(Sink* sink)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit Appender(Sink* sink)
       : sink_(sink) {}
   Appender(const Appender&) = delete;
   Appender& operator=(const Appender&) = delete;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool Enabled() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool Enabled() const {
     return sink_ != nullptr;
   }
   void Append(const Metadata* metadata, int64_t timestamp_begin,
@@ -325,14 +325,14 @@ class Scope final {
   Scope(const Scope&) = delete;
   Scope& operator=(const Scope&) = delete;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit Scope(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit Scope(
       const Metadata* metadata) {
     if (GPR_LIKELY(!appender_.Enabled())) return;
     metadata_ = metadata;
     timestamp_begin_ = absl::GetCurrentTimeNanos();
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~Scope() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~Scope() {
     if (GPR_LIKELY(!appender_.Enabled())) return;
     appender_.Append(metadata_, timestamp_begin_, absl::GetCurrentTimeNanos());
   }
@@ -362,8 +362,8 @@ GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static inline void MarkExtraEvent(
 
 class Flow {
  public:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Flow() : id_(0) {}
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit Flow(const Metadata* metadata) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Flow() : id_(0) {}
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit Flow(const Metadata* metadata) {
     Appender appender;
     metadata_ = metadata;
     if (GPR_LIKELY(!appender.Enabled())) {
@@ -372,7 +372,7 @@ class Flow {
     }
     AppendBegin(appender);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~Flow() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~Flow() {
     if (GPR_LIKELY(id_ == 0)) return;
     Appender appender;
     if (GPR_LIKELY(!appender.Enabled())) return;
@@ -393,23 +393,23 @@ class Flow {
     return *this;
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool is_active() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool is_active() const {
     return id_ != 0;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void End() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void End() {
     if (GPR_LIKELY(id_ == 0)) return;
     Appender appender;
     if (GPR_LIKELY(!appender.Enabled())) return;
     AppendEnd(appender);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Begin(const Metadata* metadata) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Begin(const Metadata* metadata) {
     Appender appender;
     if (GPR_LIKELY(!appender.Enabled())) return;
     if (id_ != 0) AppendEnd(appender);
     metadata_ = metadata;
     AppendBegin(appender);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Begin() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Begin() {
     DCHECK(metadata_ != nullptr);
     Begin(metadata_);
   }
@@ -430,7 +430,7 @@ class Flow {
 };
 
 template <typename P>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto Promise(const Metadata* md_poll,
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto Promise(const Metadata* md_poll,
                                                   const Metadata* md_flow,
                                                   P promise) {
   return
@@ -513,9 +513,9 @@ namespace grpc_core {
 namespace latent_see {
 struct Metadata {};
 struct Flow {
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool is_active() const { return false; }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void End() {}
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Begin(Metadata*) {}
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool is_active() const { return false; }
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void End() {}
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Begin(Metadata*) {}
 };
 struct Scope {
   explicit Scope(Metadata*) {}

@@ -35,12 +35,12 @@ class Race<Promise, Promises...> {
  public:
   using Result = decltype(std::declval<Promise>()());
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit Race(Promise&& promise,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit Race(Promise&& promise,
                                                      Promises&&... promises)
       : promise_(std::forward<Promise>(promise)),
         next_(std::forward<Promises>(promises)...) {}
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Result operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Result operator()() {
     // Check our own promise.
     auto r = promise_();
     if (r.pending()) {
@@ -80,9 +80,9 @@ template <typename Promise>
 class Race<Promise> {
  public:
   using Result = decltype(std::declval<Promise>()());
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit Race(Promise&& promise)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit Race(Promise&& promise)
       : promise_(std::forward<Promise>(promise)) {}
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Result operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Result operator()() {
     return promise_();
   }
 

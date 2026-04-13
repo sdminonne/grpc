@@ -1211,7 +1211,7 @@ class HuffDecoder : public HuffDecoderCommon {
   }
 
  private:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool RefillTo14() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool RefillTo14() {
     switch (buffer_len_) {
       case 0: {
         return Read2to8Bytes();
@@ -1238,7 +1238,7 @@ class HuffDecoder : public HuffDecoderCommon {
     }
     return true;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool Read2to8Bytes() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool Read2to8Bytes() {
     switch (end_ - begin_) {
       case 0:
       case 1: {
@@ -1274,20 +1274,20 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Fill2() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Fill2() {
     buffer_ = (buffer_ << 16) | (static_cast<uint64_t>(begin_[0]) << 8) |
               (static_cast<uint64_t>(begin_[1]) << 0);
     begin_ += 2;
     buffer_len_ += 16;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Fill3() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Fill3() {
     buffer_ = (buffer_ << 24) | (static_cast<uint64_t>(begin_[0]) << 16) |
               (static_cast<uint64_t>(begin_[1]) << 8) |
               (static_cast<uint64_t>(begin_[2]) << 0);
     begin_ += 3;
     buffer_len_ += 24;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Fill4() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Fill4() {
     buffer_ = (buffer_ << 32) | (static_cast<uint64_t>(begin_[0]) << 24) |
               (static_cast<uint64_t>(begin_[1]) << 16) |
               (static_cast<uint64_t>(begin_[2]) << 8) |
@@ -1295,7 +1295,7 @@ class HuffDecoder : public HuffDecoderCommon {
     begin_ += 4;
     buffer_len_ += 32;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Fill5() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Fill5() {
     buffer_ = (buffer_ << 40) | (static_cast<uint64_t>(begin_[0]) << 32) |
               (static_cast<uint64_t>(begin_[1]) << 24) |
               (static_cast<uint64_t>(begin_[2]) << 16) |
@@ -1304,7 +1304,7 @@ class HuffDecoder : public HuffDecoderCommon {
     begin_ += 5;
     buffer_len_ += 40;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Fill6() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Fill6() {
     buffer_ = (buffer_ << 48) | (static_cast<uint64_t>(begin_[0]) << 40) |
               (static_cast<uint64_t>(begin_[1]) << 32) |
               (static_cast<uint64_t>(begin_[2]) << 24) |
@@ -1314,7 +1314,7 @@ class HuffDecoder : public HuffDecoderCommon {
     begin_ += 6;
     buffer_len_ += 48;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Fill7() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Fill7() {
     buffer_ = (buffer_ << 56) | (static_cast<uint64_t>(begin_[0]) << 48) |
               (static_cast<uint64_t>(begin_[1]) << 40) |
               (static_cast<uint64_t>(begin_[2]) << 32) |
@@ -1325,7 +1325,7 @@ class HuffDecoder : public HuffDecoderCommon {
     begin_ += 7;
     buffer_len_ += 56;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Fill8() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Fill8() {
     buffer_ = 0 | (static_cast<uint64_t>(begin_[0]) << 56) |
               (static_cast<uint64_t>(begin_[1]) << 48) |
               (static_cast<uint64_t>(begin_[2]) << 40) |
@@ -1337,7 +1337,7 @@ class HuffDecoder : public HuffDecoderCommon {
     begin_ += 8;
     buffer_len_ += 64;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool Read2to7Bytes() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool Read2to7Bytes() {
     switch (end_ - begin_) {
       case 0:
       case 1: {
@@ -1369,7 +1369,7 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool Read1to7Bytes() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool Read1to7Bytes() {
     switch (end_ - begin_) {
       case 0: {
         return false;
@@ -1404,12 +1404,12 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Fill1() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Fill1() {
     buffer_ = (buffer_ << 8) | (static_cast<uint64_t>(begin_[0]) << 0);
     begin_ += 1;
     buffer_len_ += 8;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool Read1to6Bytes() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool Read1to6Bytes() {
     switch (end_ - begin_) {
       case 0: {
         return false;
@@ -1440,7 +1440,7 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done0() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done0() {
     done_ = true;
     switch (end_ - begin_) {
       case 1: {
@@ -1616,7 +1616,7 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep0() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep0() {
     if (!RefillTo1()) {
       Done1();
       return;
@@ -1628,7 +1628,7 @@ class HuffDecoder : public HuffDecoderCommon {
     const auto emit_ofs = op >> 1;
     sink_(GetEmit11(index, emit_ofs + 0));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool RefillTo1() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool RefillTo1() {
     switch (buffer_len_) {
       case 0: {
         return Read1to8Bytes();
@@ -1636,7 +1636,7 @@ class HuffDecoder : public HuffDecoderCommon {
     }
     return true;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool Read1to8Bytes() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool Read1to8Bytes() {
     switch (end_ - begin_) {
       case 0: {
         return false;
@@ -1675,11 +1675,11 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done1() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done1() {
     done_ = true;
     ok_ = false;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep1() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep1() {
     if (!RefillTo5()) {
       Done2();
       return;
@@ -1748,7 +1748,7 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool RefillTo5() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool RefillTo5() {
     switch (buffer_len_) {
       case 0: {
         return Read1to8Bytes();
@@ -1762,7 +1762,7 @@ class HuffDecoder : public HuffDecoderCommon {
     }
     return true;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done2() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done2() {
     done_ = true;
     switch (buffer_len_) {
       case 1: {
@@ -1826,7 +1826,7 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep2() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep2() {
     if (!RefillTo1()) {
       Done3();
       return;
@@ -1838,11 +1838,11 @@ class HuffDecoder : public HuffDecoderCommon {
     const auto emit_ofs = op >> 1;
     sink_(GetEmit17(index, emit_ofs + 0));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done3() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done3() {
     done_ = true;
     ok_ = false;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep3() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep3() {
     if (!RefillTo1()) {
       Done4();
       return;
@@ -1854,11 +1854,11 @@ class HuffDecoder : public HuffDecoderCommon {
     const auto emit_ofs = op >> 1;
     sink_(GetEmit18(index, emit_ofs + 0));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done4() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done4() {
     done_ = true;
     ok_ = false;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep4() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep4() {
     if (!RefillTo1()) {
       Done5();
       return;
@@ -1870,11 +1870,11 @@ class HuffDecoder : public HuffDecoderCommon {
     const auto emit_ofs = op >> 1;
     sink_(GetEmit19(index, emit_ofs + 0));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done5() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done5() {
     done_ = true;
     ok_ = false;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep5() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep5() {
     if (!RefillTo1()) {
       Done6();
       return;
@@ -1886,11 +1886,11 @@ class HuffDecoder : public HuffDecoderCommon {
     const auto emit_ofs = op >> 1;
     sink_(GetEmit20(index, emit_ofs + 0));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done6() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done6() {
     done_ = true;
     ok_ = false;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep6() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep6() {
     if (!RefillTo2()) {
       Done7();
       return;
@@ -1902,7 +1902,7 @@ class HuffDecoder : public HuffDecoderCommon {
     const auto emit_ofs = op >> 2;
     sink_(GetEmit21(index, emit_ofs + 0));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool RefillTo2() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool RefillTo2() {
     switch (buffer_len_) {
       case 0: {
         return Read1to8Bytes();
@@ -1913,7 +1913,7 @@ class HuffDecoder : public HuffDecoderCommon {
     }
     return true;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done7() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done7() {
     done_ = true;
     switch (buffer_len_) {
       case 1:
@@ -1923,7 +1923,7 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep7() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep7() {
     if (!RefillTo2()) {
       Done8();
       return;
@@ -1935,7 +1935,7 @@ class HuffDecoder : public HuffDecoderCommon {
     const auto emit_ofs = op >> 2;
     sink_(GetEmit22(index, emit_ofs + 0));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done8() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done8() {
     done_ = true;
     switch (buffer_len_) {
       case 1:
@@ -1945,7 +1945,7 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep8() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep8() {
     if (!RefillTo2()) {
       Done9();
       return;
@@ -1957,7 +1957,7 @@ class HuffDecoder : public HuffDecoderCommon {
     const auto emit_ofs = op >> 2;
     sink_(GetEmit23(index, emit_ofs + 0));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done9() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done9() {
     done_ = true;
     switch (buffer_len_) {
       case 1:
@@ -1967,7 +1967,7 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep9() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep9() {
     if (!RefillTo3()) {
       Done10();
       return;
@@ -1979,7 +1979,7 @@ class HuffDecoder : public HuffDecoderCommon {
     const auto emit_ofs = op >> 2;
     sink_(GetEmit24(index, emit_ofs + 0));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool RefillTo3() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool RefillTo3() {
     switch (buffer_len_) {
       case 0: {
         return Read1to8Bytes();
@@ -1991,7 +1991,7 @@ class HuffDecoder : public HuffDecoderCommon {
     }
     return true;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done10() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done10() {
     done_ = true;
     switch (buffer_len_) {
       case 1:
@@ -2002,7 +2002,7 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep10() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep10() {
     if (!RefillTo3()) {
       Done11();
       return;
@@ -2014,7 +2014,7 @@ class HuffDecoder : public HuffDecoderCommon {
     const auto emit_ofs = op >> 2;
     sink_(GetEmit25(index, emit_ofs + 0));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done11() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done11() {
     done_ = true;
     switch (buffer_len_) {
       case 1:
@@ -2025,7 +2025,7 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep11() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep11() {
     if (!RefillTo4()) {
       Done12();
       return;
@@ -2037,7 +2037,7 @@ class HuffDecoder : public HuffDecoderCommon {
     const auto emit_ofs = op >> 3;
     sink_(GetEmit26(index, emit_ofs + 0));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool RefillTo4() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool RefillTo4() {
     switch (buffer_len_) {
       case 0: {
         return Read1to8Bytes();
@@ -2050,7 +2050,7 @@ class HuffDecoder : public HuffDecoderCommon {
     }
     return true;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done12() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done12() {
     done_ = true;
     switch (buffer_len_) {
       case 1:
@@ -2062,7 +2062,7 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep12() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep12() {
     if (!RefillTo3()) {
       Done13();
       return;
@@ -2074,7 +2074,7 @@ class HuffDecoder : public HuffDecoderCommon {
     const auto emit_ofs = op >> 2;
     sink_(GetEmit27(index, emit_ofs + 0));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done13() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done13() {
     done_ = true;
     switch (buffer_len_) {
       case 1:
@@ -2099,7 +2099,7 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep13() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep13() {
     if (!RefillTo4()) {
       Done14();
       return;
@@ -2111,7 +2111,7 @@ class HuffDecoder : public HuffDecoderCommon {
     const auto emit_ofs = op >> 3;
     sink_(GetEmit29(index, emit_ofs + 0));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done14() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done14() {
     done_ = true;
     switch (buffer_len_) {
       case 1:
@@ -2137,7 +2137,7 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void DecodeStep14() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void DecodeStep14() {
     if (!RefillTo11()) {
       Done15();
       return;
@@ -2159,7 +2159,7 @@ class HuffDecoder : public HuffDecoderCommon {
       }
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool RefillTo11() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool RefillTo11() {
     switch (buffer_len_) {
       case 0: {
         return Read2to8Bytes();
@@ -2183,7 +2183,7 @@ class HuffDecoder : public HuffDecoderCommon {
     }
     return true;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done15() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done15() {
     done_ = true;
     switch (end_ - begin_) {
       case 1: {

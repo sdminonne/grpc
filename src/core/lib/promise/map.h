@@ -40,13 +40,13 @@ class WrappedFn<
     Fn, Arg, std::enable_if_t<!std::is_void_v<std::invoke_result_t<Fn, Arg>>>> {
  public:
   using Result = RemoveCVRef<std::invoke_result_t<Fn, Arg>>;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit WrappedFn(Fn&& fn)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit WrappedFn(Fn&& fn)
       : fn_(std::move(fn)) {}
   WrappedFn(const WrappedFn&) = delete;
   WrappedFn& operator=(const WrappedFn&) = delete;
   WrappedFn(WrappedFn&&) = default;
   WrappedFn& operator=(WrappedFn&&) = default;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Result operator()(Arg&& arg) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Result operator()(Arg&& arg) {
     return fn_(std::forward<Arg>(arg));
   }
 
@@ -59,13 +59,13 @@ class WrappedFn<
     Fn, Arg, std::enable_if_t<std::is_void_v<std::invoke_result_t<Fn, Arg>>>> {
  public:
   using Result = Empty;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit WrappedFn(Fn&& fn)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit WrappedFn(Fn&& fn)
       : fn_(std::move(fn)) {}
   WrappedFn(const WrappedFn&) = delete;
   WrappedFn& operator=(const WrappedFn&) = delete;
   WrappedFn(WrappedFn&&) = default;
   WrappedFn& operator=(WrappedFn&&) = default;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Empty operator()(Arg&& arg) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Empty operator()(Arg&& arg) {
     fn_(std::forward<Arg>(arg));
     return Empty{};
   }
@@ -82,14 +82,14 @@ class FusedFns {
  public:
   using Result = typename WrappedFn<Fn1, InnerResult>::Result;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION FusedFns(Fn0 fn0, Fn1 fn1)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  FusedFns(Fn0 fn0, Fn1 fn1)
       : fn0_(std::move(fn0)), fn1_(std::move(fn1)) {}
   FusedFns(const FusedFns&) = delete;
   FusedFns& operator=(const FusedFns&) = delete;
   FusedFns(FusedFns&&) = default;
   FusedFns& operator=(FusedFns&&) = default;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Result operator()(PromiseResult arg) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Result operator()(PromiseResult arg) {
     InnerResult inner_result = fn0_(std::move(arg));
     return fn1_(std::move(inner_result));
   }
@@ -135,7 +135,7 @@ class Map {
   using PromiseType = promise_detail::PromiseLike<Promise>;
 
  public:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Map(Promise&& promise, Fn&& fn)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Map(Promise&& promise, Fn&& fn)
       : promise_(std::forward<Promise>(promise)), fn_(std::forward<Fn>(fn)) {}
 
   Map(const Map&) = delete;
@@ -148,7 +148,7 @@ class Map {
   using PromiseResult = typename PromiseType::Result;
   using Result = typename promise_detail::WrappedFn<Fn, PromiseResult>::Result;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> operator()() {
     Poll<PromiseResult> r = promise_();
     if (auto* p = r.value_if_ready()) {
       return fn_(std::move(*p));
@@ -185,7 +185,7 @@ class Map<Map<Promise, Fn0>, Fn1> {
   using PromiseType = typename Map<Promise, Fn0>::PromiseType;
 
  public:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Map(Map<Promise, Fn0> map, Fn1&& fn1)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Map(Map<Promise, Fn0> map, Fn1&& fn1)
       : promise_(std::move(map.promise_)),
         fn_(FusedFn(std::move(map.fn_), std::forward<Fn1>(fn1))) {}
 
@@ -199,7 +199,7 @@ class Map<Map<Promise, Fn0>, Fn1> {
   using PromiseResult = typename Map<Promise, Fn0>::PromiseResult;
   using Result = typename FusedFn::Result;
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> operator()() {
     Poll<PromiseResult> r = promise_();
     if (auto* p = r.value_if_ready()) {
       return fn_(std::move(*p));
@@ -253,12 +253,12 @@ GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline auto CheckDelayed(
 template <size_t kElem>
 struct JustElem {
   template <typename... A>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto operator()(std::tuple<A...>&& t)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto operator()(std::tuple<A...>&& t)
       const -> decltype(std::get<kElem>(std::forward<std::tuple<A...>>(t))) {
     return std::get<kElem>(std::forward<std::tuple<A...>>(t));
   }
   template <typename... A>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto operator()(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto operator()(
       const std::tuple<A...>& t) const -> decltype(std::get<kElem>(t)) {
     return std::get<kElem>(t);
   }

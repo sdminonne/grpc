@@ -24,7 +24,7 @@ namespace grpc_core {
 
 // Call the destructor of p without having to name the type of p.
 template <typename T>
-GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline void Destruct(T* p) {
+GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION  inline void Destruct(T* p) {
   p->~T();
 }
 

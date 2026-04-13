@@ -106,11 +106,11 @@ struct JoinTraits {
   template <typename T>
   using ResultType = absl::remove_reference_t<T>;
   template <typename T>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsOk(const T&) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsOk(const T&) {
     return true;
   }
   template <typename T>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static T Unwrapped(T x) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static T Unwrapped(T x) {
     return x;
   }
   template <typename R, typename T>
@@ -118,7 +118,7 @@ struct JoinTraits {
     abort();
   }
   template <typename... A>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static std::tuple<A...> FinalReturn(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static std::tuple<A...> FinalReturn(
       A... a) {
     return std::tuple(std::move(a)...);
   }
@@ -127,9 +127,9 @@ struct JoinTraits {
 template <typename... Promises>
 class Join {
  public:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit Join(Promises... promises)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit Join(Promises... promises)
       : state_(std::move(promises)...) {}
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto operator()() {
     return state_.PollOnce();
   }
 
@@ -144,7 +144,7 @@ class Join {
 
 struct WrapInTuple {
   template <typename T>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION std::tuple<T> operator()(T x) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  std::tuple<T> operator()(T x) {
     return std::tuple(std::move(x));
   }
 };

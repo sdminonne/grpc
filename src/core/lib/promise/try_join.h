@@ -169,56 +169,56 @@ struct TryJoinTraits {
   template <typename T>
   using ResultType = Result<absl::remove_reference_t<T>>;
   template <typename T>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsOk(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsOk(
       const absl::StatusOr<T>& x) {
     return x.ok();
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsOk(const absl::Status& x) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsOk(const absl::Status& x) {
     return x.ok();
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsOk(StatusFlag x) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsOk(StatusFlag x) {
     return x.ok();
   }
   template <typename T>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsOk(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsOk(
       const ValueOrFailure<T>& x) {
     return x.ok();
   }
   template <typename T>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static T Unwrapped(absl::StatusOr<T> x) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static T Unwrapped(absl::StatusOr<T> x) {
     return std::move(*x);
   }
   template <typename T>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static T Unwrapped(ValueOrFailure<T> x) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static T Unwrapped(ValueOrFailure<T> x) {
     return std::move(*x);
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Empty Unwrapped(absl::Status) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Empty Unwrapped(absl::Status) {
     return Empty{};
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Empty Unwrapped(StatusFlag) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Empty Unwrapped(StatusFlag) {
     return Empty{};
   }
   template <typename R, typename T>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static R EarlyReturn(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static R EarlyReturn(
       absl::StatusOr<T> x) {
     return x.status();
   }
   template <typename R>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static R EarlyReturn(absl::Status x) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static R EarlyReturn(absl::Status x) {
     return FailureStatusCast<R>(std::move(x));
   }
   template <typename R>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static R EarlyReturn(StatusFlag x) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static R EarlyReturn(StatusFlag x) {
     return FailureStatusCast<R>(x);
   }
   template <typename R, typename T>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static R EarlyReturn(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static R EarlyReturn(
       const ValueOrFailure<T>& x) {
     GRPC_CHECK(!x.ok());
     return FailureStatusCast<R>(Failure{});
   }
   template <typename... A>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static auto FinalReturn(A&&... a) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static auto FinalReturn(A&&... a) {
     return Result<std::tuple<A...>>(std::tuple(std::forward<A>(a)...));
   }
 };
@@ -227,9 +227,9 @@ struct TryJoinTraits {
 template <template <typename> class R, typename... Promises>
 class TryJoin {
  public:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit TryJoin(Promises... promises)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit TryJoin(Promises... promises)
       : state_(std::move(promises)...) {}
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION auto operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  auto operator()() {
     return state_.PollOnce();
   }
 
@@ -245,7 +245,7 @@ class TryJoin {
 template <template <typename> class R>
 struct WrapInStatusOrTuple {
   template <typename T>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION R<std::tuple<T>> operator()(R<T> x) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  R<std::tuple<T>> operator()(R<T> x) {
     if (!x.ok()) return x.status();
     return std::tuple(std::move(*x));
   }

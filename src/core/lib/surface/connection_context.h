@@ -187,7 +187,7 @@ class ConnectionContext final : public Orphanable {
   ~ConnectionContext() override;
 
  private:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void** registered_properties() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void** registered_properties() {
     return reinterpret_cast<void**>(this + 1);
   }
 

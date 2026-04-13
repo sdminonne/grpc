@@ -304,40 +304,40 @@ class Stream : public RefCounted<Stream> {
     }
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool IsInitialMetadataReceived() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool IsInitialMetadataReceived() const {
     return did_receive_initial_metadata_;
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void SetInitialMetadataReceived() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void SetInitialMetadataReceived() {
     did_receive_initial_metadata_ = true;
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool IsTrailingMetadataReceived() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool IsTrailingMetadataReceived() const {
     return did_receive_trailing_metadata_;
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void SetTrailingMetadataReceived() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void SetTrailingMetadataReceived() {
     did_receive_trailing_metadata_ = true;
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION CallHandler& GetCallHandler() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  CallHandler& GetCallHandler() {
     return std::get<CallHandler>(call_);
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION CallInitiator& GetCallInitiator() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  CallInitiator& GetCallInitiator() {
     return std::get<CallInitiator>(call_);
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION GrpcMessageAssembler&
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  GrpcMessageAssembler&
   GetGrpcMessageAssembler() {
     return assembler_;
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION HeaderAssembler& GetHeaderAssembler() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  HeaderAssembler& GetHeaderAssembler() {
     return header_assembler_;
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION chttp2::StreamFlowControl&
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  chttp2::StreamFlowControl&
   GetStreamFlowControl() {
     return flow_control_;
   }

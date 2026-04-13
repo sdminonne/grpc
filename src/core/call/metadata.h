@@ -141,11 +141,11 @@ struct TrySeqTraitsWithSfinae<ServerMetadataOrHandle<T>> {
   using UnwrappedType = Arena::PoolPtr<T>;
   using WrappedType = ServerMetadataOrHandle<T>;
   template <typename Next>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static auto CallFactory(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static auto CallFactory(
       Next* next, ServerMetadataOrHandle<T>&& status) {
     return next->Make(std::move(*status));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static bool IsOk(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static bool IsOk(
       const ServerMetadataOrHandle<T>& status) {
     return status.ok();
   }
@@ -153,7 +153,7 @@ struct TrySeqTraitsWithSfinae<ServerMetadataOrHandle<T>> {
     return status.metadata()->DebugString();
   }
   template <typename R>
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static R ReturnValue(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static R ReturnValue(
       ServerMetadataOrHandle<T>&& status) {
     return FailureStatusCast<R>(status.metadata());
   }

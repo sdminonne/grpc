@@ -348,23 +348,23 @@ class GRPC_MUST_USE_RESULT ValueOrHttp2Status {
           Http2Status::Http2ErrorType::kOk);
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION const T& value() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  const T& value() const {
     DCHECK(std::holds_alternative<T>(value_));
     return std::get<T>(value_);
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION T& value() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  T& value() {
     DCHECK(std::holds_alternative<T>(value_));
     return std::get<T>(value_);
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION static Http2Status TakeStatus(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  static Http2Status TakeStatus(
       ValueOrHttp2Status<T>&& status) {
     DCHECK(std::holds_alternative<Http2Status>(status.value_));
     return std::move(std::get<Http2Status>(status.value_));
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION bool IsOk() const {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  bool IsOk() const {
     return std::holds_alternative<T>(value_);
   }
 

@@ -314,7 +314,7 @@ void Party::RunLockedAndUnref(Party* party, uint64_t prev_state) {
     explicit RunState(PartyWakeup first) : first{first}, next{} {}
     PartyWakeup first;
     PartyWakeup next;
-    GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Run() {
+    GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Run() {
       g_run_state = this;
       do {
         GRPC_LATENT_SEE_SCOPE("run_one_party");

@@ -32,7 +32,7 @@ class CallSizeEstimator final {
   explicit CallSizeEstimator(size_t initial_estimate)
       : call_size_estimate_(initial_estimate) {}
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION size_t CallSizeEstimate() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  size_t CallSizeEstimate() {
     // We round up our current estimate to the NEXT value of kRoundUpSize.
     // This ensures:
     //  1. a consistent size allocation when our estimate is drifting slowly
@@ -45,7 +45,7 @@ class CallSizeEstimator final {
            ~(kRoundUpSize - 1);
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void UpdateCallSizeEstimate(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void UpdateCallSizeEstimate(
       size_t size) {
     size_t cur = call_size_estimate_.load(std::memory_order_relaxed);
     if (cur < size) {

@@ -55,11 +55,11 @@ struct JoinState<Traits, P0, P1> {
     GPR_NO_UNIQUE_ADDRESS Result1 result1;
   };
   GPR_NO_UNIQUE_ADDRESS BitSet<2> ready;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(P0&& p0, P1&& p1) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(P0&& p0, P1&& p1) {
     Construct(&promise0, std::forward<P0>(p0));
     Construct(&promise1, std::forward<P1>(p1));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(const JoinState& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(const JoinState& other) =
       delete;
   JoinState& operator=(const JoinState& other) = delete;
   JoinState& operator=(JoinState&& other) = delete;
@@ -99,12 +99,12 @@ struct JoinState<Traits, P0, P1> {
           arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(JoinState&& other) noexcept {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(JoinState&& other) noexcept {
     GRPC_DCHECK(other.ready.none());
     Construct(&promise0, std::move(other.promise0));
     Construct(&promise1, std::move(other.promise1));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~JoinState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~JoinState() {
     if (ready.is_set(0)) {
       Destruct(&result0);
     } else {
@@ -118,7 +118,7 @@ struct JoinState<Traits, P0, P1> {
   }
   using Result =
       typename Traits::template ResultType<std::tuple<Result0, Result1>>;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     if (!ready.is_set(0)) {
       GRPC_TRACE_VLOG(promise_primitives, 2)
           << "join[" << this << "]: begin poll joint 1/2";
@@ -193,12 +193,12 @@ struct JoinState<Traits, P0, P1, P2> {
     GPR_NO_UNIQUE_ADDRESS Result2 result2;
   };
   GPR_NO_UNIQUE_ADDRESS BitSet<3> ready;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(P0&& p0, P1&& p1, P2&& p2) {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(P0&& p0, P1&& p1, P2&& p2) {
     Construct(&promise0, std::forward<P0>(p0));
     Construct(&promise1, std::forward<P1>(p1));
     Construct(&promise2, std::forward<P2>(p2));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(const JoinState& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(const JoinState& other) =
       delete;
   JoinState& operator=(const JoinState& other) = delete;
   JoinState& operator=(JoinState&& other) = delete;
@@ -250,13 +250,13 @@ struct JoinState<Traits, P0, P1, P2> {
           arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(JoinState&& other) noexcept {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(JoinState&& other) noexcept {
     GRPC_DCHECK(other.ready.none());
     Construct(&promise0, std::move(other.promise0));
     Construct(&promise1, std::move(other.promise1));
     Construct(&promise2, std::move(other.promise2));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~JoinState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~JoinState() {
     if (ready.is_set(0)) {
       Destruct(&result0);
     } else {
@@ -275,7 +275,7 @@ struct JoinState<Traits, P0, P1, P2> {
   }
   using Result = typename Traits::template ResultType<
       std::tuple<Result0, Result1, Result2>>;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     if (!ready.is_set(0)) {
       GRPC_TRACE_VLOG(promise_primitives, 2)
           << "join[" << this << "]: begin poll joint 1/3";
@@ -379,14 +379,14 @@ struct JoinState<Traits, P0, P1, P2, P3> {
     GPR_NO_UNIQUE_ADDRESS Result3 result3;
   };
   GPR_NO_UNIQUE_ADDRESS BitSet<4> ready;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(P0&& p0, P1&& p1, P2&& p2,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(P0&& p0, P1&& p1, P2&& p2,
                                                  P3&& p3) {
     Construct(&promise0, std::forward<P0>(p0));
     Construct(&promise1, std::forward<P1>(p1));
     Construct(&promise2, std::forward<P2>(p2));
     Construct(&promise3, std::forward<P3>(p3));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(const JoinState& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(const JoinState& other) =
       delete;
   JoinState& operator=(const JoinState& other) = delete;
   JoinState& operator=(JoinState&& other) = delete;
@@ -450,14 +450,14 @@ struct JoinState<Traits, P0, P1, P2, P3> {
           arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(JoinState&& other) noexcept {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(JoinState&& other) noexcept {
     GRPC_DCHECK(other.ready.none());
     Construct(&promise0, std::move(other.promise0));
     Construct(&promise1, std::move(other.promise1));
     Construct(&promise2, std::move(other.promise2));
     Construct(&promise3, std::move(other.promise3));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~JoinState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~JoinState() {
     if (ready.is_set(0)) {
       Destruct(&result0);
     } else {
@@ -481,7 +481,7 @@ struct JoinState<Traits, P0, P1, P2, P3> {
   }
   using Result = typename Traits::template ResultType<
       std::tuple<Result0, Result1, Result2, Result3>>;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     if (!ready.is_set(0)) {
       GRPC_TRACE_VLOG(promise_primitives, 2)
           << "join[" << this << "]: begin poll joint 1/4";
@@ -614,7 +614,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4> {
     GPR_NO_UNIQUE_ADDRESS Result4 result4;
   };
   GPR_NO_UNIQUE_ADDRESS BitSet<5> ready;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(P0&& p0, P1&& p1, P2&& p2,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(P0&& p0, P1&& p1, P2&& p2,
                                                  P3&& p3, P4&& p4) {
     Construct(&promise0, std::forward<P0>(p0));
     Construct(&promise1, std::forward<P1>(p1));
@@ -622,7 +622,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4> {
     Construct(&promise3, std::forward<P3>(p3));
     Construct(&promise4, std::forward<P4>(p4));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(const JoinState& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(const JoinState& other) =
       delete;
   JoinState& operator=(const JoinState& other) = delete;
   JoinState& operator=(JoinState&& other) = delete;
@@ -698,7 +698,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4> {
           arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(JoinState&& other) noexcept {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(JoinState&& other) noexcept {
     GRPC_DCHECK(other.ready.none());
     Construct(&promise0, std::move(other.promise0));
     Construct(&promise1, std::move(other.promise1));
@@ -706,7 +706,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4> {
     Construct(&promise3, std::move(other.promise3));
     Construct(&promise4, std::move(other.promise4));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~JoinState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~JoinState() {
     if (ready.is_set(0)) {
       Destruct(&result0);
     } else {
@@ -735,7 +735,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4> {
   }
   using Result = typename Traits::template ResultType<
       std::tuple<Result0, Result1, Result2, Result3, Result4>>;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     if (!ready.is_set(0)) {
       GRPC_TRACE_VLOG(promise_primitives, 2)
           << "join[" << this << "]: begin poll joint 1/5";
@@ -897,7 +897,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5> {
     GPR_NO_UNIQUE_ADDRESS Result5 result5;
   };
   GPR_NO_UNIQUE_ADDRESS BitSet<6> ready;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(P0&& p0, P1&& p1, P2&& p2,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(P0&& p0, P1&& p1, P2&& p2,
                                                  P3&& p3, P4&& p4, P5&& p5) {
     Construct(&promise0, std::forward<P0>(p0));
     Construct(&promise1, std::forward<P1>(p1));
@@ -906,7 +906,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5> {
     Construct(&promise4, std::forward<P4>(p4));
     Construct(&promise5, std::forward<P5>(p5));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(const JoinState& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(const JoinState& other) =
       delete;
   JoinState& operator=(const JoinState& other) = delete;
   JoinState& operator=(JoinState&& other) = delete;
@@ -994,7 +994,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5> {
           arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(JoinState&& other) noexcept {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(JoinState&& other) noexcept {
     GRPC_DCHECK(other.ready.none());
     Construct(&promise0, std::move(other.promise0));
     Construct(&promise1, std::move(other.promise1));
@@ -1003,7 +1003,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5> {
     Construct(&promise4, std::move(other.promise4));
     Construct(&promise5, std::move(other.promise5));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~JoinState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~JoinState() {
     if (ready.is_set(0)) {
       Destruct(&result0);
     } else {
@@ -1037,7 +1037,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5> {
   }
   using Result = typename Traits::template ResultType<
       std::tuple<Result0, Result1, Result2, Result3, Result4, Result5>>;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     if (!ready.is_set(0)) {
       GRPC_TRACE_VLOG(promise_primitives, 2)
           << "join[" << this << "]: begin poll joint 1/6";
@@ -1227,7 +1227,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6> {
     GPR_NO_UNIQUE_ADDRESS Result6 result6;
   };
   GPR_NO_UNIQUE_ADDRESS BitSet<7> ready;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(P0&& p0, P1&& p1, P2&& p2,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(P0&& p0, P1&& p1, P2&& p2,
                                                  P3&& p3, P4&& p4, P5&& p5,
                                                  P6&& p6) {
     Construct(&promise0, std::forward<P0>(p0));
@@ -1238,7 +1238,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6> {
     Construct(&promise5, std::forward<P5>(p5));
     Construct(&promise6, std::forward<P6>(p6));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(const JoinState& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(const JoinState& other) =
       delete;
   JoinState& operator=(const JoinState& other) = delete;
   JoinState& operator=(JoinState&& other) = delete;
@@ -1338,7 +1338,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6> {
           arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(JoinState&& other) noexcept {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(JoinState&& other) noexcept {
     GRPC_DCHECK(other.ready.none());
     Construct(&promise0, std::move(other.promise0));
     Construct(&promise1, std::move(other.promise1));
@@ -1348,7 +1348,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6> {
     Construct(&promise5, std::move(other.promise5));
     Construct(&promise6, std::move(other.promise6));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~JoinState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~JoinState() {
     if (ready.is_set(0)) {
       Destruct(&result0);
     } else {
@@ -1387,7 +1387,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6> {
   }
   using Result = typename Traits::template ResultType<std::tuple<
       Result0, Result1, Result2, Result3, Result4, Result5, Result6>>;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     if (!ready.is_set(0)) {
       GRPC_TRACE_VLOG(promise_primitives, 2)
           << "join[" << this << "]: begin poll joint 1/7";
@@ -1606,7 +1606,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6, P7> {
     GPR_NO_UNIQUE_ADDRESS Result7 result7;
   };
   GPR_NO_UNIQUE_ADDRESS BitSet<8> ready;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(P0&& p0, P1&& p1, P2&& p2,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(P0&& p0, P1&& p1, P2&& p2,
                                                  P3&& p3, P4&& p4, P5&& p5,
                                                  P6&& p6, P7&& p7) {
     Construct(&promise0, std::forward<P0>(p0));
@@ -1618,7 +1618,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6, P7> {
     Construct(&promise6, std::forward<P6>(p6));
     Construct(&promise7, std::forward<P7>(p7));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(const JoinState& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(const JoinState& other) =
       delete;
   JoinState& operator=(const JoinState& other) = delete;
   JoinState& operator=(JoinState&& other) = delete;
@@ -1730,7 +1730,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6, P7> {
           arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(JoinState&& other) noexcept {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(JoinState&& other) noexcept {
     GRPC_DCHECK(other.ready.none());
     Construct(&promise0, std::move(other.promise0));
     Construct(&promise1, std::move(other.promise1));
@@ -1741,7 +1741,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6, P7> {
     Construct(&promise6, std::move(other.promise6));
     Construct(&promise7, std::move(other.promise7));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~JoinState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~JoinState() {
     if (ready.is_set(0)) {
       Destruct(&result0);
     } else {
@@ -1785,7 +1785,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6, P7> {
   }
   using Result = typename Traits::template ResultType<std::tuple<
       Result0, Result1, Result2, Result3, Result4, Result5, Result6, Result7>>;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     if (!ready.is_set(0)) {
       GRPC_TRACE_VLOG(promise_primitives, 2)
           << "join[" << this << "]: begin poll joint 1/8";
@@ -2032,7 +2032,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6, P7, P8> {
     GPR_NO_UNIQUE_ADDRESS Result8 result8;
   };
   GPR_NO_UNIQUE_ADDRESS BitSet<9> ready;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(P0&& p0, P1&& p1, P2&& p2,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(P0&& p0, P1&& p1, P2&& p2,
                                                  P3&& p3, P4&& p4, P5&& p5,
                                                  P6&& p6, P7&& p7, P8&& p8) {
     Construct(&promise0, std::forward<P0>(p0));
@@ -2045,7 +2045,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6, P7, P8> {
     Construct(&promise7, std::forward<P7>(p7));
     Construct(&promise8, std::forward<P8>(p8));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(const JoinState& other) =
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(const JoinState& other) =
       delete;
   JoinState& operator=(const JoinState& other) = delete;
   JoinState& operator=(JoinState&& other) = delete;
@@ -2169,7 +2169,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6, P7, P8> {
           arena);
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION JoinState(JoinState&& other) noexcept {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  JoinState(JoinState&& other) noexcept {
     GRPC_DCHECK(other.ready.none());
     Construct(&promise0, std::move(other.promise0));
     Construct(&promise1, std::move(other.promise1));
@@ -2181,7 +2181,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6, P7, P8> {
     Construct(&promise7, std::move(other.promise7));
     Construct(&promise8, std::move(other.promise8));
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~JoinState() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~JoinState() {
     if (ready.is_set(0)) {
       Destruct(&result0);
     } else {
@@ -2231,7 +2231,7 @@ struct JoinState<Traits, P0, P1, P2, P3, P4, P5, P6, P7, P8> {
   using Result = typename Traits::template ResultType<
       std::tuple<Result0, Result1, Result2, Result3, Result4, Result5, Result6,
                  Result7, Result8>>;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> PollOnce() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> PollOnce() {
     if (!ready.is_set(0)) {
       GRPC_TRACE_VLOG(promise_primitives, 2)
           << "join[" << this << "]: begin poll joint 1/9";

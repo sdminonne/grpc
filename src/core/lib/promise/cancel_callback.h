@@ -28,28 +28,28 @@ namespace cancel_callback_detail {
 template <typename Fn>
 class Handler {
  public:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION explicit Handler(Fn&& fn)
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  explicit Handler(Fn&& fn)
       : fn_(std::forward<Fn>(fn)) {}
   Handler(const Handler&) = delete;
   Handler& operator=(const Handler&) = delete;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~Handler() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~Handler() {
     if (!done_) {
       promise_detail::Context<Arena> ctx(arena_.get());
       fn_();
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Handler(Handler&& other) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Handler(Handler&& other) noexcept
       : fn_(std::move(other.fn_)), done_(other.done_) {
     other.done_ = true;
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Handler& operator=(
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Handler& operator=(
       Handler&& other) noexcept {
     fn_ = std::move(other.fn_);
     done_ = other.done_;
     other.done_ = true;
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION void Done() { done_ = true; }
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  void Done() { done_ = true; }
 
  private:
   Fn fn_;

@@ -113,13 +113,13 @@ class If {
       typename PollTraits<decltype(std::declval<TruePromise>()())>::Type;
 
  public:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION If(C&& condition, T&& if_true,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  If(C&& condition, T&& if_true,
                                           F&& if_false)
       : state_(Evaluating{ConditionPromise(std::forward<C>(condition)),
                           TrueFactory(std::forward<T>(if_true)),
                           FalseFactory(std::forward<F>(if_false))}) {}
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> operator()() {
     return std::visit(CallPoll<false>{this}, state_);
   }
 
@@ -138,7 +138,7 @@ class If {
 
     If* const self;
 
-    GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION PollResult
+    GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  PollResult
     operator()(Evaluating& evaluating) const {
       static_assert(
           !kSetState,
@@ -152,7 +152,7 @@ class If {
     }
 
     template <class Promise>
-    GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION PollResult
+    GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  PollResult
     operator()(Promise& promise) const {
       auto r = promise();
       if (kSetState && r.pending()) {
@@ -174,7 +174,7 @@ class If<bool, T, F> {
       typename PollTraits<decltype(std::declval<TruePromise>()())>::Type;
 
  public:
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION If(bool condition, T&& if_true,
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  If(bool condition, T&& if_true,
                                           F&& if_false)
       : condition_(condition) {
     TrueFactory true_factory(std::forward<T>(if_true));
@@ -185,7 +185,7 @@ class If<bool, T, F> {
       Construct(&if_false_, false_factory.Make());
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION ~If() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  ~If() {
     if (condition_) {
       Destruct(&if_true_);
     } else {
@@ -195,7 +195,7 @@ class If<bool, T, F> {
 
   If(const If&) = delete;
   If& operator=(const If&) = delete;
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION If(If&& other) noexcept
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  If(If&& other) noexcept
       : condition_(other.condition_) {
     if (condition_) {
       Construct(&if_true_, std::move(other.if_true_));
@@ -203,14 +203,14 @@ class If<bool, T, F> {
       Construct(&if_false_, std::move(other.if_false_));
     }
   }
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION If& operator=(If&& other) noexcept {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  If& operator=(If&& other) noexcept {
     if (&other == this) return *this;
     Destruct(this);
     Construct(this, std::move(other));
     return *this;
   }
 
-  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION Poll<Result> operator()() {
+  GPR_ATTRIBUTE_ALWAYS_INLINE_FUNCTION inline  Poll<Result> operator()() {
 #ifndef NDEBUG
     asan_canary_ = std::make_unique<int>(1 + *asan_canary_);
 #endif
